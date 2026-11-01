@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bora! Zettel für die Wohnung</title>
+<style>
+  :root{--ink:#14201A;--ink2:#5B6B62;--green:#009C3B;--sun:#FFD400;--sea:#1F4FB8;--bg:#F4F6F2}
+  *{box-sizing:border-box;margin:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Rounded","Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);padding:20px 16px 40px}
+  header{max-width:760px;margin:0 auto 18px}
+  h1{font-size:26px;letter-spacing:-.02em}
+  header p{color:var(--ink2);margin-top:6px;line-height:1.4}
+  button{margin-top:14px;font:inherit;font-weight:800;font-size:17px;padding:14px 20px;border:0;border-radius:14px;background:var(--green);color:#fff;width:100%;max-width:340px}
+  .grid{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+  .z{background:#fff;border-radius:14px;padding:16px 14px 14px;position:relative;overflow:hidden;break-inside:avoid;border:1px solid #E3E8E2;min-height:150px;display:flex;flex-direction:column}
+  .z::before{content:"";position:absolute;left:0;right:0;top:0;height:7px;background:linear-gradient(90deg,var(--green) 0 60%,var(--sun) 60% 80%,var(--sea) 80%)}
+  .room{font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+  .pt{font-size:26px;font-weight:900;letter-spacing:-.02em;margin-top:6px;line-height:1.1}
+  .pr{font-size:13px;font-weight:700;color:var(--green);margin-top:3px}
+  .de{font-size:13px;color:var(--ink2);margin-top:2px}
+  .ex{margin-top:auto;padding-top:10px;border-top:1px dashed #D5DDD4;font-size:14px;font-weight:700}
+  .ex span{display:block;font-weight:500;color:var(--ink2);font-size:12px;margin-top:1px}
+  .brand{position:absolute;right:10px;bottom:8px;font-size:10px;font-weight:800;color:#C5CEC4}
+  @media print{
+    @page{size:A4;margin:10mm}
+    body{background:#fff;padding:0}
+    header{display:none}
+    .grid{max-width:none;grid-template-columns:repeat(3,1fr);gap:4mm}
+    .z{height:62mm;min-height:0;border:1px dashed #9AA59C;border-radius:3mm;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    .pt{font-size:22pt}
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🏠 Zettel für eure Wohnung</h1>
+  <p>Ausdrucken, ausschneiden und an die Sachen kleben: Kühlschrank, Spiegel, Tür … Jedes Mal, wenn ihr draufschaut, sagt ihr den Satz laut.</p>
+  <p>Am iPhone: <b>Drucken</b> antippen, dann den Drucker wählen oder oben auf <b>Teilen → In Dateien sichern</b> für ein PDF.</p>
+  <button onclick="print()">🖨️ Drucken / als PDF sichern</button>
+</header>
+<div class="grid" id="g"></div>
+<script src="data.js?v=10"></script>
+<script>
+  const e = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  document.getElementById('g').innerHTML = LABELS.map(l => `<div class="z"><div class="room">${e(l.room)}</div>
+    <div class="pt">${e(l.pt)}</div><div class="pr">🗣 ${e(l.pr)}</div><div class="de">${e(l.de)}</div>
+    <div class="ex">„${e(l.ex)}“<span>${e(l.exde)}</span></div><div class="brand">Bora! 🇧🇷</div></div>`).join('');
+</script>
+</body>
+</html>

@@ -125,6 +125,7 @@ const IC = {
   home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
   learn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M8 7h7M8 11h5"/></svg>',
   duo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><circle cx="17" cy="9.5" r="2.8"/><path d="M2.5 20c.6-3.6 3.2-5.5 6.5-5.5s5.9 1.9 6.5 5.5M15.5 14.6c2.9-.3 5.3 1.3 6 4.9"/></svg>',
+  casa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 11V8a3 3 0 0 1 3-3h8a3 3 0 0 1 3 3v3"/><path d="M3 13a2 2 0 0 1 4 0v2h10v-2a2 2 0 0 1 4 0v5H3z"/><path d="M5 18v2M19 18v2"/></svg>',
   plan: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4M8 14l2 2 4-4"/></svg>',
   spk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5v5h4l5 4.5v-14L8 9.5z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>'
 };
@@ -212,7 +213,7 @@ document.addEventListener('visibilitychange', () => { if (document.visibilitySta
 const UI = { tab: 'home', unit: null, seg: 'themen' };
 window.go = (tab) => { UI.tab = tab; UI.unit = null; render(); scrollTo(0, 0); };
 function renderTabs() {
-  const t = [['home', 'Heute'], ['learn', 'Themen'], ['duo', 'Zu zweit'], ['plan', 'Plan']];
+  const t = [['home', 'Heute'], ['learn', 'Themen'], ['casa', 'Casa'], ['duo', 'Zu zweit'], ['plan', 'Plan']];
   const dot = openChallenges().length ? '<span class="dot"></span>' : '';
   $('#tabs').innerHTML = S.me ? t.map(([k, l]) => `<button class="${UI.tab === k ? 'on' : ''}" onclick="go('${k}')">${IC[k]}${k === 'duo' ? dot : ''}<span>${l}</span></button>`).join('') : '';
   $('#tabs').hidden = !S.me;
@@ -220,7 +221,7 @@ function renderTabs() {
 function render() {
   renderTabs();
   if (!S.me) { $('#app').innerHTML = onboarding(); return; }
-  $('#app').innerHTML = UI.tab === 'home' ? home() : UI.tab === 'learn' ? learn() : UI.tab === 'duo' ? duo() : plan();
+  $('#app').innerHTML = UI.tab === 'home' ? home() : UI.tab === 'learn' ? learn() : UI.tab === 'casa' ? casa() : UI.tab === 'duo' ? duo() : plan();
 }
 
 // ---------- Start ----------
@@ -294,6 +295,8 @@ function home() {
       <div class="btns"><button class="btn white" onclick="startSession('daily')">Los geht’s</button><button class="btn ghost" onclick="startSession('quick')">⚡ 1 Minute</button></div>`}
   </div>
   ${partner}
+  ${S.zr ? zoneBanner() : `<button class="card tight" style="width:100%;text-align:left" onclick="go('casa')"><div class="pstrip"><div style="font-size:30px">🏠</div>
+    <div class="grow"><h3>Heute in der Wohnung</h3><p class="small">${S.ct && S.ct.d === d ? S.ct.done.length : 0}/3 Aufgaben · Rollenspiele · Português-Zone</p></div><span class="chev">›</span></div></button>`}
   <div class="card"><div class="row between"><h3>Diese Woche</h3><span class="small">${S.partner ? '👥 Team-Serie ' + teamStreak() : ''}</span></div>${weekRow()}</div>
   ${d - S.start < MISSIONS.length ? `<div class="card"><p class="small" style="font-weight:700;margin-bottom:10px">MISSION TAG ${mi + 1} VON 21</p>
     <div class="mission"><div class="ic">${m[0]}</div><div class="grow"><h3>${esc(m[1])}</h3><p class="small">${esc(m[2])}</p></div>
@@ -406,7 +409,7 @@ window.closeOverlay = (ask) => {
   if (ask && SES && SES.i > 0 && SES.i < SES.tasks.length && !confirm('Einheit abbrechen? Dein Fortschritt bis hier bleibt gespeichert.')) return;
   stopSay();
   $('#overlay').hidden = true; $('#overlay').innerHTML = ''; document.body.style.overflow = '';
-  SES = null; LQ = null; SC = null; render(); sync();
+  SES = null; LQ = null; SC = null; HS = null; clearInterval(ZT); render(); sync();
 };
 function frame(body, foot = '') {
   const pct = SES ? Math.round((SES.i / SES.tasks.length) * 100) : 0;
@@ -708,13 +711,166 @@ function liveEnd() {
   save();
 }
 
+// ---------- Casa: Portugiesisch zu Hause ----------
+const casaTasks = () => { const d = today(), n = CASA_TASKS.length, a = [];
+  for (let k = 0; a.length < 3; k++) { const i = (d * 5 + k * 7) % n; if (!a.includes(i)) a.push(i); } return a; };
+const pp = t => P(String(t).replace(/\{p\}/g, pName()));
+const zoneLeft = () => S.zr ? Math.max(0, S.zr.t0 + S.zr.dur * 60000 - Date.now()) : 0;
+const mmss = ms => { const s = Math.ceil(ms / 1000); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const zoneBanner = () => S.zr ? `<button class="card tight zonebar" onclick="zoneOpen()"><div class="row"><div style="font-size:28px">🇧🇷</div><div class="grow"><h3>Português-Zone läuft</h3><p class="small">${zoneLeft() ? 'noch ' + mmss(zoneLeft()) + ' Min · nur Portugiesisch!' : 'Zeit ist um – Ergebnis ansehen'}</p></div><span class="chev">›</span></div></button>` : '';
+function casa() {
+  if (!S.ct || S.ct.d !== today()) S.ct = { d: today(), done: [] };
+  const tk = casaTasks(), nDone = S.ct.done.length, rooms = [...new Set(LABELS.map(l => l.room))];
+  const hsDone = HOME_SCENES.filter(s => S.hs && S.hs[s.id]).length;
+  UI.room = UI.room || rooms[0];
+  return `<h1>Nossa casa 🏠</h1><p class="sub">Eure Wohnung wird zu Brasilien. Hier übt ihr zusammen, ganz ohne Bildschirm-Starren.</p>
+  ${zoneBanner()}
+  <div class="hero casa-hero mt">
+    <div class="lbl">Português-Zone</div>
+    <div class="big">Ab jetzt nur noch Portugiesisch</div>
+    <div class="meta">Timer an, Deutsch kostet einen Punkt. Wer mehr Punkte hat, spült ab 🍽️</div>
+    <div class="btns">${S.zr ? `<button class="btn white" onclick="zoneOpen()">Zur laufenden Zone</button>` : [15, 30, 60].map(m => `<button class="btn white" onclick="zoneStart(${m})">${m} Min</button>`).join('')}</div>
+    <div class="zstat">⏱ ${S.zoneMin || 0} Minuten nur Portugiesisch geschafft</div>
+  </div>
+
+  <h2>Heute in der Wohnung <span class="small">· ${nDone}/3</span></h2>
+  <div class="list">${tk.map(i => { const t = CASA_TASKS[i], on = S.ct.done.includes(i); return `<div class="li">
+    <div style="font-size:26px">${t.e}</div><div class="grow"><div class="pt" style="font-size:15px">${esc(pp(t.de))}</div><div class="pr" style="font-size:14px">„${esc(P(t.pt))}“</div></div>
+    <button class="say sm" onclick="say(${esc(JSON.stringify(t.pt))})">${IC.spk}</button><button class="check ${on ? 'on' : ''}" onclick="casaTask(${i})">${on ? '✓' : ''}</button></div>`; }).join('')}</div>
+
+  <h2>Rollenspiele zu zweit <span class="small">· ${hsDone}/${HOME_SCENES.length}</span></h2>
+  <p class="sub" style="margin:-4px 0 10px">Ein Handy zwischen euch auf den Tisch. Jeder spricht seine Rolle laut – erst ablesen, dann aus dem Kopf.</p>
+  <div class="list">${HOME_SCENES.map(s => { const lv = (S.hs && S.hs[s.id]) || 0; return `<button class="li" onclick="hsOpen('${s.id}')"><div style="font-size:28px">${s.e}</div><div class="grow"><div class="pt">${esc(s.t)}</div><div class="de">${s.lines.length} Sätze · ${s.a === s.b ? 'zwei Mitbewohner' : esc(s.a) + ' & ' + esc(s.b)}</div></div>${lv >= 2 ? '<span class="pill ok">★★</span>' : lv === 1 ? '<span class="pill">★☆</span>' : '<span class="chev">›</span>'}</button>`; }).join('')}</div>
+
+  <h2>Wohnung beschriften</h2>
+  <div class="card"><p class="sub" style="margin-bottom:12px">Klebt Zettel an Kühlschrank, Spiegel und Tür. Jedes Mal, wenn ihr hinschaut, lernt ihr nebenbei, ganz ohne App.</p>
+    <a class="btn sun" href="zettel.html" target="_blank" style="text-decoration:none">🖨️ ${LABELS.length} Zettel drucken</a>
+    <div class="seg mt">${rooms.map(r => `<button class="${UI.room === r ? 'on' : ''}" onclick="UI.room='${r}';render()">${r}</button>`).join('')}</div>
+    <div class="labels">${LABELS.filter(l => l.room === UI.room).map(l => `<button class="lbl" onclick="say(${esc(JSON.stringify(l.pt))});setTimeout(()=>say(${esc(JSON.stringify(l.ex))}),1400)"><b>${esc(l.pt)}</b><span>${esc(l.de)}</span><i>„${esc(l.ex)}“</i></button>`).join('')}</div></div>
+
+  <h2>Neue Sätze für zu Hause</h2>
+  <div class="list">${['u13', 'u14', 'u15'].map(u => { const x = UNIT[u], p = unitProg(u); return `<button class="li" onclick="UI.tab='learn';UI.unit='${u}';render();scrollTo(0,0)"><div style="font-size:28px">${x.e}</div><div class="grow"><div class="pt">${esc(x.t)}</div><div class="de">${p.l} von ${p.n} gelernt${S.focus === u ? ' · 🎯 Fokus' : ''}</div></div><span class="chev">›</span></button>`; }).join('')}</div>
+
+  <h2>Eure WG-Regeln</h2>
+  <div class="card">
+    <p style="margin-bottom:10px"><b>1. Begrüßen immer auf Portugiesisch.</b> „E aí, beleza?“ statt „Hey, na?“, ab heute ohne Ausnahme.</p>
+    <p style="margin-bottom:10px"><b>2. Abendessen = Português-Zone.</b> 15 Minuten am Tisch, Timer an. Mehr braucht es nicht.</p>
+    <p style="margin-bottom:10px"><b>3. Wort vergessen? Umschreiben.</b> „É tipo …“ oder „Como é que fala …?“ statt Deutsch.</p>
+    <p><b>4. Fehler sind Punkte für den anderen, nicht peinlich.</b> Wer korrigiert, hilft. „Me corrige!“</p>
+  </div>`;
+}
+window.casaTask = i => {
+  const a = S.ct.done, k = a.indexOf(i);
+  if (k >= 0) a.splice(k, 1); else { a.push(i); confetti(); }
+  if (a.length === 3 && !S.ct.xp) { S.ct.xp = 1; finishDay(20); toast('🏠 Alle 3 Wohnungs-Aufgaben geschafft · +20 XP'); }
+  save(); render();
+};
+
+// Rollenspiel zu zweit: ein Handy, zwei Rollen, abwechselnd laut sprechen
+let HS = null;
+window.hsOpen = id => {
+  const s = HOME_SCENES.find(x => x.id === id), lv = (S.hs && S.hs[id]) || 0;
+  HS = { s, i: 0, swap: false, mode: lv >= 1 ? 'speak' : 'read', show: false, hit: [0, 0], tot: [0, 0] };
+  openOverlay(); hsSetup();
+};
+const hsName = r => (r === 0) !== HS.swap ? S.me.name : pName();
+const hsRole = r => r === 0 ? HS.s.a : HS.s.b;
+function hsSetup() {
+  const s = HS.s;
+  $('#overlay').innerHTML = `<div class="sx"><div class="shead"><button class="x" onclick="closeOverlay()">✕</button><div class="grow"></div></div>
+    <div class="sbody"><div class="center" style="font-size:58px">${s.e}</div><h1 class="center">${esc(s.t)}</h1>
+    <p class="sub center" style="margin-bottom:16px">Legt das Handy zwischen euch. Wer dran ist, sieht seinen Namen und spricht laut.</p>
+    <div class="roles"><div class="role r0"><div class="avatar av-me">${initial(hsName(0))}</div><b>${esc(hsName(0))}</b><span>${esc(hsRole(0))}</span></div>
+      <button class="swap" onclick="HS.swap=!HS.swap;hsSetup()" aria-label="Rollen tauschen">⇄</button>
+      <div class="role r1"><div class="avatar av-p">${initial(hsName(1))}</div><b>${esc(hsName(1))}</b><span>${esc(hsRole(1))}</span></div></div>
+    <p class="small" style="font-weight:700;margin:18px 0 8px">STUFE WÄHLEN</p>
+    <button class="opt ${HS.mode === 'read' ? 'sel' : ''}" onclick="HS.mode='read';hsSetup()"><b>★ Stufe 1 · Ablesen</b><br><span class="small">Portugiesisch steht da. Hören, laut nachsprechen, mit Gefühl spielen.</span></button>
+    <button class="opt ${HS.mode === 'speak' ? 'sel' : ''}" onclick="HS.mode='speak';hsSetup()"><b>★★ Stufe 2 · Aus dem Kopf</b><br><span class="small">Nur Deutsch steht da. Sag es auf Portugiesisch, dann aufdecken. Der andere bewertet.</span></button>
+    </div><div class="sfoot"><button class="btn" onclick="hsLine()">Szene starten</button></div></div>`;
+}
+function hsLine() {
+  const s = HS.s, L = s.lines[HS.i];
+  if (!L) return hsEnd();
+  const [r, pt, de] = L, name = hsName(r);
+  const log = s.lines.slice(Math.max(0, HS.i - 3), HS.i).map(([rr, p, d]) => `<div class="bubble ${rr === 0 ? 'me' : 'them'}"><div class="t2" style="opacity:.8;font-weight:700">${esc(hsName(rr))}</div>${esc(P(p))}</div>`).join('');
+  const showPt = HS.mode === 'read' || HS.show;
+  $('#overlay').innerHTML = `<div class="sx"><div class="shead"><button class="x" onclick="closeOverlay()">✕</button><div class="prog"><i style="width:${(HS.i / s.lines.length) * 100}%"></i></div></div>
+    <div class="sbody"><div class="chat">${log}</div>
+    <div class="turn r${r}"><div class="row" style="gap:10px"><div class="avatar ${r === 0 ? 'av-me' : 'av-p'}">${initial(name)}</div><div class="grow"><b>${esc(name)} ist dran</b><div class="small">${esc(hsRole(r))}</div></div><div class="small">${HS.i + 1}/${s.lines.length}</div></div>
+      ${HS.mode === 'speak' ? `<div class="tde">${esc(de)}</div>` : ''}
+      ${showPt ? `<div class="row" style="gap:10px;margin-top:12px"><div class="tpt grow">${esc(P(pt))}</div><button class="say" onclick="say(HS.s.lines[HS.i][1])">${IC.spk}</button></div>${HS.mode === 'read' ? `<div class="small" style="margin-top:6px">${esc(de)}</div>` : ''}` : `<p class="small" style="margin-top:12px">🗣 Sag es laut auf Portugiesisch …</p>`}
+    </div></div>
+    <div class="sfoot">${HS.mode === 'read' ? `<button class="btn ${r === 0 ? '' : 'sea'}" onclick="HS.i++;hsLine()">Gesagt ✓ · weiter</button>`
+      : HS.show ? `<div class="btns" style="margin:0"><button class="btn red" onclick="hsRate(0)">✗ Nicht ganz</button><button class="btn" onclick="hsRate(1)">✓ Richtig</button></div>`
+      : `<button class="btn sea" onclick="HS.show=true;hsLine();say(HS.s.lines[HS.i][1])">Aufdecken</button>`}</div></div>`;
+  if (HS.mode === 'read') say(pt);
+}
+window.hsLine = hsLine;
+window.hsRate = ok => { const r = HS.s.lines[HS.i][0]; HS.tot[r]++; if (ok) HS.hit[r]++; HS.i++; HS.show = false; hsLine(); };
+function hsEnd() {
+  const s = HS.s, lv = HS.mode === 'speak' ? 2 : 1;
+  S.hs = S.hs || {}; S.hs[s.id] = Math.max(S.hs[s.id] || 0, lv);
+  const xp = lv === 2 ? 30 : 20, wasDone = finishDay(xp);
+  confetti(); save();
+  const sc = r => HS.tot[r] ? `<div class="pcard"><div class="avatar ${r === 0 ? 'av-me' : 'av-p'}">${initial(hsName(r))}</div><h3>${esc(hsName(r))}</h3><div class="fl">${HS.hit[r]}/${HS.tot[r]}</div></div>` : '';
+  $('#overlay').innerHTML = `<div class="sx"><div class="sbody end"><div class="trophy">${s.e}</div><h1>${lv === 2 ? 'Aus dem Kopf geschafft!' : 'Szene geschafft!'}</h1>
+    <div class="xpbig">+${xp} XP</div>${!wasDone ? `<p class="sub">Zählt als Einheit für heute ✓</p>` : ''}
+    ${lv === 2 ? `<div class="duo mt">${sc(0)}${sc(1)}</div>` : ''}
+    <div class="card mt" style="text-align:left"><p class="small" style="font-weight:700;margin-bottom:6px">🎤 JETZT FREI WEITER</p><p>${esc(s.free)}</p></div>
+    </div><div class="sfoot"><div class="btns" style="margin:0"><button class="btn ghost" onclick="HS.swap=!HS.swap;HS.i=0;HS.hit=[0,0];HS.tot=[0,0];HS.show=false;hsSetup()">⇄ Rollen tauschen</button><button class="btn" onclick="closeOverlay()">Fertig</button></div></div></div>`;
+}
+
+// Português-Zone: Timer, Strafpunkte für Deutsch, Rettungssätze, Gesprächsthemen
+let ZT = null;
+window.zoneStart = min => { S.zr = { t0: Date.now(), dur: min, k: [0, 0], topic: Math.floor(Math.random() * ZONE_TOPICS.length) }; save(); say('Bora! Só português!'); zoneOpen(); };
+window.zoneOpen = () => { openOverlay(); drawZone(); clearInterval(ZT); ZT = setInterval(zoneTick, 1000); };
+function zoneTick() {
+  if (!S.zr) return clearInterval(ZT);
+  const el = $('#ztime'); if (!el) return clearInterval(ZT);
+  const left = zoneLeft();
+  el.textContent = mmss(left);
+  const ring = $('#zring'); if (ring) ring.style.setProperty('--p', (1 - left / (S.zr.dur * 60000)) * 100);
+  if (!left) { clearInterval(ZT); say(ZONE_END); zoneEnd(); }
+}
+function drawZone() {
+  const z = S.zr, t = ZONE_TOPICS[z.topic], left = zoneLeft();
+  const help = UNIT.u15.items.map((_, i) => BYID['u15-' + i]);
+  $('#overlay').innerHTML = `<div class="sx"><div class="shead"><button class="x" onclick="closeOverlay()">✕</button><div class="grow center small" style="font-weight:800">🇧🇷 SÓ PORTUGUÊS</div><div style="width:38px"></div></div>
+    <div class="sbody">
+    <div class="zring" id="zring" style="--p:${(1 - left / (z.dur * 60000)) * 100}"><div><b id="ztime">${mmss(left)}</b><span>von ${z.dur} Min</span></div></div>
+    <p class="small center" style="font-weight:700;margin:16px 0 8px">WER HAT DEUTSCH GEREDET?</p>
+    <div class="duo">${[S.me.name, pName()].map((n, r) => `<button class="pcard strike" onclick="zoneK(${r})"><div class="avatar ${r ? 'av-p' : 'av-me'}">${initial(n)}</div><h3>${esc(n)}</h3><div class="fl">${z.k[r]}</div><span class="small">🇩🇪 +1 antippen</span></button>`).join('')}</div>
+    <div class="card mt"><div class="row between"><p class="small" style="font-weight:700">🎲 GESPRÄCHSTHEMA</p><button class="link" onclick="S.zr.topic=(S.zr.topic+1+Math.floor(Math.random()*(ZONE_TOPICS.length-1)))%ZONE_TOPICS.length;save();drawZone()">neues Thema</button></div>
+      <h3 style="margin-top:6px">${esc(t.de)}</h3><div class="row" style="gap:8px;margin-top:6px"><p class="grow" style="color:var(--green);font-weight:700">„${esc(t.pt)}“</p><button class="say sm" onclick="say(${esc(JSON.stringify(t.pt))})">${IC.spk}</button></div></div>
+    <h2>Rettungssätze</h2>
+    <div class="list">${help.map(c => `<div class="li"><div class="grow"><div class="pt" style="font-size:15px">${esc(c.pt)}</div><div class="de">${esc(c.de)}</div></div>${sayBtn(c.id, 1)}</div>`).join('')}</div>
+    </div><div class="sfoot"><button class="btn ghost" onclick="if(confirm('Zone jetzt beenden?'))zoneEnd()">Zone beenden</button></div></div>`;
+}
+window.zoneK = r => { S.zr.k[r]++; save(); say('Falou alemão! Ponto pra mim!'); drawZone(); };
+function zoneEnd() {
+  clearInterval(ZT);
+  const z = S.zr; if (!z) return;
+  const min = Math.max(1, Math.round(Math.min(z.dur * 60000, Date.now() - z.t0) / 60000));
+  S.zoneMin = (S.zoneMin || 0) + min; S.zr = null;
+  const wasDone = finishDay(Math.min(120, min * 3));
+  const [a, b] = z.k, names = [S.me.name, pName()];
+  const verdict = a === b ? '🤝 Unentschieden: heute spült ihr zusammen' : `🍽️ ${esc(names[a > b ? 0 : 1])} spült heute ab`;
+  confetti(); save();
+  $('#overlay').innerHTML = `<div class="sx"><div class="sbody end"><div class="trophy">🇧🇷</div><h1>${min} Minuten nur Portugiesisch!</h1>
+    <p class="sub">${a + b === 0 ? 'Kein einziges deutsches Wort – wie echte Brasilianer!' : `Deutsch-Punkte: ${esc(names[0])} ${a} · ${esc(names[1])} ${b}`}</p>
+    <div class="xpbig">+${Math.min(120, min * 3)} XP</div>${!wasDone ? `<p class="sub">Zählt als Einheit für heute ✓</p>` : ''}
+    ${a + b ? `<div class="card mt"><h3>${verdict}</h3></div>` : ''}
+    <p class="small mt">Insgesamt schon ${S.zoneMin} Minuten in der Zone.</p>
+    </div><div class="sfoot"><button class="btn" onclick="closeOverlay()">Fertig</button></div></div>`;
+}
+
 // ---------- Plan ----------
 function plan() {
   const td = tripDays(), wk = Math.floor((today() - S.start) / 7) + 1;
   const phases = [
     ['Anlaufen', 'Woche 1–3', 'Jeden Tag 3–5 Minuten. Die App schlägt dir alles vor, die 21 Missionen auf „Heute“ führen dich. Ziel: die Gewohnheit, nicht die Menge.', wk <= 3],
     ['Fundament', 'Woche 4–10', '5–10 Minuten täglich. Erste Worte, Kennenlernen, Bestellen, Zahlen, Unterwegs sitzen. Jeden Sonntag Challenge.', wk >= 4 && wk <= 10],
-    ['Sprechen', 'ab Woche 11', '3× pro Woche Live abfragen, alle Szenen zu zweit laut nachspielen, euch Sprachnachrichten auf Portugiesisch schicken.', wk >= 11 && (td === null || td > 28)],
+    ['Sprechen', 'ab Woche 11', 'Jeden Abend 15 Min Português-Zone, alle Casa-Rollenspiele auf Stufe ★★, euch Sprachnachrichten auf Portugiesisch schicken.', wk >= 11 && (td === null || td > 28)],
     ['Endspurt', 'letzte 4 Wochen', 'Alles wiederholen, Komplimente & Slang perfektionieren. Tipp: eine Probestunde mit einem Muttersprachler (z. B. über italki oder Preply).', td !== null && td <= 28 && td >= 0]
   ];
   const nowIdx = phases.findIndex(p => p[3]);
@@ -766,7 +922,7 @@ function plan() {
     <button class="btn ghost" onclick="say('Oi, tudo bem? Bora aprender português!')">🔊 Stimme testen</button>
     <p class="small mt">Kein Ton? Lautstärke-Tasten am iPhone hochdrehen – die Aufnahmen laufen auch im Lautlos-Modus.</p>
   </div>
-  <p class="small center" style="margin:20px 0 6px">Bora! · ${CARDS.length} Sätze · ${SCENES.length} Szenen · gespeichert auf deinem Handy</p>
+  <p class="small center" style="margin:20px 0 6px">Bora! · ${CARDS.length} Sätze · ${SCENES.length + HOME_SCENES.length} Szenen · gespeichert auf deinem Handy</p>
   <p class="center"><button class="small" style="text-decoration:underline" onclick="resetAll()">Alles zurücksetzen</button></p>`;
 }
 window.resetAll = () => { if (confirm('Wirklich alles löschen? Dein ganzer Lernstand geht verloren.')) { localStorage.removeItem(KEY); location.reload(); } };

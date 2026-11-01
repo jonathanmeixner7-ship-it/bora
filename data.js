@@ -299,6 +299,88 @@ const UNITS = [
   ['Eu torço pro Flamengo','Ich bin Flamengo-Fan','eu TOR-ssu pru fla-MEN-gu','Beliebtester Verein Brasiliens (Rio)'],
   ['Vamos ver o jogo?','Schauen wir das Spiel?','WA-mus wer u SCHO-gu',''],
   ['Estou todo suado','Ich bin total verschwitzt','es-TOU TO-du ssu-A-du','']
+]},
+{ id:'u13', t:'Zu Hause', e:'🏠', c:'#0B7A75',
+  tip:'Eure Wohnung ist euer Brasilien-Trainingslager. Diese Sätze braucht ihr jeden Tag – beim Frühstück, Kochen, Aufräumen und abends auf der Couch.',
+  items:[
+  ['Bom dia! Dormiu bem?','Guten Morgen! Gut geschlafen?','bong DSCHI-a! dor-MIU bäng',''],
+  ['Vou fazer café. Quer?','Ich mach Kaffee. Willst du?','wou fa-SER ka-FÄ. kär',''],
+  ['Cadê a chave?','Wo ist der Schlüssel?','ka-DE a SCHA-wi','„Cadê …?“ = „Wo ist …?“ – so fragt man im Alltag'],
+  ['Tô com fome. Bora cozinhar?','Ich hab Hunger. Kochen wir?','to kong FO-mi. BO-ra ko-si-NJAR',''],
+  ['O que tem pra comer?','Was gibt’s zu essen?','u ki täng pra ko-MER',''],
+  ['Acabou o leite','Die Milch ist alle','a-ka-BOU u LEI-tschi','„Acabou …“ = … ist leer – passt für alles'],
+  ['Precisamos ir ao mercado','Wir müssen einkaufen gehen','pre-ssi-SA-mus ir au mer-KA-du',''],
+  ['É sua vez de lavar a louça','Du bist dran mit Abspülen','ä SSU-a wes dschi la-WAR a LOU-ssa',''],
+  ['Eu lavo, você seca','Ich spüle, du trocknest ab','eu LA-wu, wo-SSE SSE-ka',''],
+  ['Pode tirar o lixo?','Kannst du den Müll rausbringen?','PO-dschi tschi-RAR u LI-schu',''],
+  ['A casa tá uma bagunça','Die Wohnung ist ein Chaos','a KA-sa ta U-ma ba-GUN-ssa',''],
+  ['Vamos arrumar a casa?','Räumen wir auf?','WA-mus a-hu-MAR a KA-sa',''],
+  ['Que cheiro bom!','Riecht das gut!','ki SCHEI-ru bong',''],
+  ['Tá pronto! Vem comer!','Fertig! Komm essen!','ta PRON-tu! wäng ko-MER',''],
+  ['Me passa o sal?','Gibst du mir das Salz?','mi PA-ssa u ssau','„Me passa …?“ klappt für alles auf dem Tisch'],
+  ['Bora ver um filme?','Schauen wir einen Film?','BO-ra wer ung FIU-mi',''],
+  ['Você escolhe','Du suchst aus','wo-SSE es-KO-lji',''],
+  ['Cadê o controle?','Wo ist die Fernbedienung?','ka-DE u kon-TRO-li',''],
+  ['Tô morto de cansado','Ich bin todmüde','to MOR-tu dschi kan-SSA-du',''],
+  ['Vou tomar banho','Ich geh duschen','wou to-MAR BA-nju','„Tomar banho“ heißt duschen, nicht baden'],
+  ['Vou dormir. Boa noite!','Ich geh schlafen. Gute Nacht!','wou dor-MIR. BO-a NOI-tschi',''],
+  ['Quem vai cozinhar hoje?','Wer kocht heute?','käng wai ko-si-NJAR O-schi',''],
+  ['Faz silêncio, tô estudando','Sei leise, ich lerne','fas ssi-LEN-ssju, to es-tu-DAN-du',''],
+  ['Que horas você chega em casa?','Wann kommst du heim?','ki O-ras wo-SSE SCHE-ga äng KA-sa',''],
+  ['Vai sair hoje à noite?','Gehst du heute Abend raus?','wai ssa-IR O-schi a NOI-tschi',''],
+  ['Que roupa eu coloco?','Was zieh ich an?','ki HOU-pa eu ko-LO-ku',''],
+  ['Abre a janela?','Machst du das Fenster auf?','A-bri a scha-NÄ-la',''],
+  ['Liga o ventilador','Mach den Ventilator an','LI-ga u wen-tschi-la-DOR','Ausmachen = „desliga“'],
+  ['Como foi seu dia?','Wie war dein Tag?','KO-mu foi sseu DSCHI-a','Antwort: „Foi de boa“ (easy) oder „Foi puxado“ (anstrengend)'],
+  ['Você viu meu carregador?','Hast du mein Ladekabel gesehen?','wo-SSE wiu meu ka-he-ga-DOR',''],
+  ['Chegou uma encomenda pra você','Ein Paket ist für dich gekommen','sche-GOU U-ma en-ko-MEN-da pra wo-SSE',''],
+  ['Fecha a porta, por favor','Mach bitte die Tür zu','FE-scha a POR-ta, pur fa-WOR','']
+]},
+{ id:'u14', t:'Umgangssprache', e:'🗣️', c:'#7048E8',
+  tip:'So reden Brasilianer wirklich: kurz, locker, mit vielen kleinen Wörtern. Wer „tô“ statt „estou“ sagt, klingt sofort wie ein Local.',
+  items:[
+  ['Tô / Tá / Tamo','Ich bin / Es ist / Wir sind (kurz)','to / ta / TA-mu','Im Alltag sagt fast niemand „estou“ – sondern „tô“'],
+  ['Cê vai?','Gehst du? (kurz für „você“)','sse wai','„Cê“ = gesprochenes „você“'],
+  ['Pra onde?','Wohin?','pra ON-dschi','„Pra“ = gesprochenes „para“'],
+  ['Né?','Oder? / Ne?','nä','Hängt man an fast jeden Satz: „Tá calor, né?“'],
+  ['Tipo…','So… / Halt…','TSCHI-pu','Das Füllwort Nr. 1 – wie „like“ im Englischen'],
+  ['Então…','Also…','en-TAUN','Kauft dir Zeit zum Nachdenken'],
+  ['Fala sério!','Jetzt mal im Ernst! / Echt jetzt?','FA-la SSÄ-rju',''],
+  ['Pô!','Mann! / Ey!','po','„Pô, cara!“ – wenn dich was nervt'],
+  ['Eita!','Uff! / Ups!','EI-ta','„Eita, esqueci!“ – Upps, vergessen!'],
+  ['Vixe!','Oh oh! / Auweia!','WI-schi',''],
+  ['Deu ruim','Ist schiefgegangen','deu hu-ING',''],
+  ['Deu certo!','Hat geklappt!','deu SSER-tu',''],
+  ['Tô nem aí','Ist mir egal','to nãi a-I',''],
+  ['Que preguiça…','Keinen Bock… / Bin so faul','ki pre-GI-ssa',''],
+  ['Tô morrendo de fome','Ich sterbe vor Hunger','to mo-HEN-du dschi FO-mi',''],
+  ['Mó calor!','Mega heiß!','mo ka-LOR','„Mó“ = „maior“ = mega'],
+  ['Tô com saudade de casa','Ich vermisse zu Hause','to kong ssau-DA-dschi dschi KA-sa',''],
+  ['Que vergonha!','Wie peinlich!','ki wer-GO-nja',''],
+  ['Relaxa!','Chill mal!','he-LA-scha',''],
+  ['Demorou!','Geht klar! / Abgemacht!','de-mo-ROU','Wörtlich „hat gedauert“ – heißt aber „klar, gerne“'],
+  ['Fechado!','Deal! / Abgemacht!','fe-SCHA-du',''],
+  ['Pode crer!','Absolut! / Auf jeden Fall!','PO-dschi krer',''],
+  ['Já era','Vorbei / Zu spät','scha Ä-ra',''],
+  ['Tá de brincadeira!','Du machst Witze!','ta dschi brin-ka-DEI-ra',''],
+  ['Para de pegar no meu pé!','Hör auf, mich zu nerven!','PA-ra dschi pe-GAR nu meu pä',''],
+  ['Mandou bem!','Stark gemacht!','man-DOU bäng','']
+]},
+{ id:'u15', t:'Nur Portugiesisch', e:'🆘', c:'#E67700',
+  tip:'Eure Rettungssätze für die Português-Zone: Damit bleibt ihr auf Portugiesisch, auch wenn ein Wort fehlt.',
+  items:[
+  ['O que significa …?','Was bedeutet …?','u ki ssig-ni-FI-ka',''],
+  ['Como é que fala …?','Wie sagt man … ? (locker)','KO-mu ä ki FA-la','Statt Deutsch: einfach so fragen'],
+  ['Não entendi','Hab ich nicht verstanden','naung en-ten-DSCHI',''],
+  ['Esqueci a palavra','Ich hab das Wort vergessen','es-ke-SSI a pa-LA-wra',''],
+  ['É tipo …','Das ist so wie …','ä TSCHI-pu','Wort vergessen? Umschreiben statt Deutsch!'],
+  ['Tá certo assim?','Ist das so richtig?','ta SSER-tu a-SSING',''],
+  ['Me corrige!','Korrigier mich!','mi ko-HI-schi',''],
+  ['Deixa eu pensar…','Lass mich überlegen…','DEI-scha eu pen-SSAR',''],
+  ['Ainda não sei falar isso','Das kann ich noch nicht sagen','a-IN-da naung ssei fa-LAR I-ssu',''],
+  ['Em português, por favor!','Auf Portugiesisch, bitte!','äng por-tu-GES, pur fa-WOR',''],
+  ['Falou alemão! Ponto pra mim!','Deutsch geredet! Punkt für mich!','fa-LOU a-le-MAUN! PON-tu pra ming','Der Strafpunkt-Satz für die Zone'],
+  ['Fala de novo, mais devagar','Sag’s nochmal, langsamer','FA-la dschi NO-wu, mais de-wa-GAR','']
 ]}
 ];
 
@@ -343,6 +425,191 @@ const SCENES = [
   {them:'Para queimadura, esse gel é ótimo.', de:'Für Sonnenbrand ist dieses Gel super.', opts:['Vou levar esse. Quanto é?','Que sorriso lindo!','O aeroporto'], ok:0},
   {them:'Dá oitenta reais.', de:'Das macht achtzig Real.', opts:['Aceita cartão?','Pra qual time você torce?','Sei lá'], ok:0}
 ]}
+];
+
+// ---------- Casa: Portugiesisch in der eigenen Wohnung ----------
+// Rollenspiele zu zweit: [0 = Person A, 1 = Person B, Portugiesisch, Deutsch]
+const HOME_SCENES = [
+{ id:'h1', t:'Morgens in der Küche', e:'☕', a:'Mitbewohner', b:'Mitbewohner', free:'Erzählt euch frei weiter, was ihr heute vorhabt – 1 Minute, nur Portugiesisch.', lines:[
+  [0,'Bom dia! Dormiu bem?','Guten Morgen! Gut geschlafen?'],
+  [1,'Mais ou menos. Tô morto de sono','Geht so. Ich bin todmüde'],
+  [0,'Vou fazer café. Quer um?','Ich mach Kaffee. Willst du einen?'],
+  [1,'Quero sim! Com leite, por favor','Ja, gern! Mit Milch, bitte'],
+  [0,'Eita, acabou o leite','Ups, die Milch ist alle'],
+  [1,'Sério? Então preto mesmo','Echt? Dann eben schwarz'],
+  [0,'O que você vai fazer hoje?','Was machst du heute?'],
+  [1,'Vou trabalhar e depois vou pra academia','Ich arbeite und danach geh ich ins Gym'],
+  [0,'Beleza! Até mais tarde','Alles klar! Bis später']
+]},
+{ id:'h2', t:'Zusammen kochen', e:'🍳', a:'Mitbewohner', b:'Mitbewohner', free:'Kocht heute wirklich zusammen – und sagt jeden Handgriff auf Portugiesisch an.', lines:[
+  [0,'Tô com uma fome! Bora cozinhar?','Ich hab so Hunger! Kochen wir?'],
+  [1,'Bora! O que tem na geladeira?','Los! Was ist im Kühlschrank?'],
+  [0,'Tem frango, arroz e uns tomates','Es gibt Hähnchen, Reis und ein paar Tomaten'],
+  [1,'Perfeito. Eu corto a cebola','Perfekt. Ich schneide die Zwiebel'],
+  [0,'Beleza, eu faço o arroz','Gut, ich mach den Reis'],
+  [1,'Me passa a faca?','Gibst du mir das Messer?'],
+  [0,'Toma. Cuidado, tá afiada!','Hier. Vorsicht, das ist scharf!'],
+  [1,'Hmm, que cheiro bom!','Hmm, riecht das gut!'],
+  [0,'Tá pronto! Vem comer!','Fertig! Komm essen!'],
+  [1,'Nossa, tá delicioso, cara!','Wow, ist das lecker, Alter!']
+]},
+{ id:'h3', t:'Wer spült ab?', e:'🧽', a:'Mitbewohner', b:'Mitbewohner', free:'Streitet 1 Minute auf Portugiesisch, wer heute den Müll rausbringt. Wer zuerst Deutsch redet, verliert.', lines:[
+  [0,'Cara, a pia tá cheia de louça','Alter, die Spüle ist voller Geschirr'],
+  [1,'Não é minha vez! Eu lavei ontem','Ich bin nicht dran! Ich hab gestern gespült'],
+  [0,'Mentira! Ontem fui eu','Gelogen! Gestern war ich das'],
+  [1,'Fala sério… Então vamos juntos?','Echt jetzt… Dann machen wir es zusammen?'],
+  [0,'Fechado. Eu lavo, você seca','Abgemacht. Ich spüle, du trocknest ab'],
+  [1,'E depois você tira o lixo','Und danach bringst du den Müll raus'],
+  [0,'Tá bom, tá bom… Que preguiça!','Ja, ja… Kein Bock!'],
+  [1,'Relaxa, em cinco minutos acabou','Chill, in fünf Minuten ist es erledigt']
+]},
+{ id:'h4', t:'Netflix-Abend', e:'🍿', a:'Mitbewohner', b:'Mitbewohner', free:'Schaut heute 10 Minuten eine Serie mit portugiesischem Ton – und erzählt euch danach, was passiert ist.', lines:[
+  [0,'Bora ver um filme hoje?','Schauen wir heute einen Film?'],
+  [1,'Bora! Filme ou série?','Klar! Film oder Serie?'],
+  [0,'Sei lá… Você escolhe','Keine Ahnung… Du suchst aus'],
+  [1,'Que tal uma série brasileira?','Wie wär’s mit einer brasilianischen Serie?'],
+  [0,'Boa ideia! Com legenda em português','Gute Idee! Mit portugiesischen Untertiteln'],
+  [1,'Cadê o controle?','Wo ist die Fernbedienung?'],
+  [0,'Tá no sofá, embaixo da almofada','Auf dem Sofa, unter dem Kissen'],
+  [1,'Achei! Vou fazer pipoca','Gefunden! Ich mach Popcorn'],
+  [0,'Show! Traz uma cerveja também?','Mega! Bringst du auch ein Bier mit?']
+]},
+{ id:'h5', t:'Vorglühen & Ausgehen', e:'🕺', a:'Mitbewohner', b:'Mitbewohner', free:'Macht euch fertig und gebt euch gegenseitig 3 Komplimente auf Portugiesisch – Übung für später 😉', lines:[
+  [0,'E aí, vai sair hoje à noite?','Na, gehst du heute Abend raus?'],
+  [1,'Claro! Tem uma festa no centro','Klar! Es gibt eine Party im Zentrum'],
+  [0,'Massa! Que horas a gente sai?','Geil! Wann gehen wir los?'],
+  [1,'Lá pelas onze','So gegen elf'],
+  [0,'Que roupa eu coloco? Essa camisa tá boa?','Was zieh ich an? Ist das Hemd okay?'],
+  [1,'Tá bonito, mano. Você tá cheiroso!','Sieht gut aus, Bro. Du riechst gut!'],
+  [0,'Valeu! Pede um Uber?','Danke! Bestellst du ein Uber?'],
+  [1,'Já pedi. Chega em cinco minutos','Schon bestellt. Kommt in fünf Minuten'],
+  [0,'Partiu!','Los geht’s!']
+]},
+{ id:'h6', t:'Der Morgen danach', e:'🤕', a:'Mitbewohner', b:'Mitbewohner', free:'Erzählt euch auf Portugiesisch die lustigste Geschichte vom letzten Wochenende.', lines:[
+  [0,'Nossa… Que dor de cabeça','Oh Mann… Was für Kopfschmerzen'],
+  [1,'Eu também. Bebi demais ontem','Ich auch. Ich hab gestern zu viel getrunken'],
+  [0,'Você lembra que horas a gente chegou?','Weißt du noch, wann wir heimgekommen sind?'],
+  [1,'Sei lá, umas quatro da manhã','Keine Ahnung, so um vier Uhr morgens'],
+  [0,'E aquela menina? Ela te mandou mensagem?','Und das Mädel? Hat sie dir geschrieben?'],
+  [1,'Mandou! A gente vai sair sábado','Ja! Wir gehen am Samstag aus'],
+  [0,'Mandou bem, cara!','Stark gemacht, Alter!'],
+  [1,'Agora preciso de água e um café forte','Jetzt brauch ich Wasser und einen starken Kaffee']
+]},
+{ id:'h7', t:'Einkaufsliste', e:'🛒', a:'Mitbewohner', b:'Mitbewohner', free:'Schreibt eure echte Einkaufsliste für diese Woche – nur auf Portugiesisch.', lines:[
+  [0,'Vou no mercado. Precisa de alguma coisa?','Ich geh einkaufen. Brauchst du was?'],
+  [1,'Preciso! Acabou o café e o papel higiênico','Ja! Kaffee und Klopapier sind alle'],
+  [0,'Beleza. Mais alguma coisa?','Okay. Sonst noch was?'],
+  [1,'Ovos, banana e frango pra semana','Eier, Bananen und Hähnchen für die Woche'],
+  [0,'Quer cerveja também?','Willst du auch Bier?'],
+  [1,'Óbvio! Te passo o dinheiro pelo Pix','Logisch! Ich schick dir das Geld per Pix'],
+  [0,'Fechado. Volto em meia hora','Abgemacht. Bin in einer halben Stunde zurück']
+]},
+{ id:'h8', t:'Ab ins Gym', e:'💪', a:'Mitbewohner', b:'Mitbewohner', free:'Im nächsten Training zählt ihr alle Wiederholungen auf Portugiesisch: um, dois, três …', lines:[
+  [0,'Bora treinar?','Gehen wir trainieren?'],
+  [1,'Bora! Hoje é dia de perna','Los! Heute ist Beintag'],
+  [0,'Ah não… Que preguiça','Oh nein… Kein Bock'],
+  [1,'Para de reclamar! Vamos!','Hör auf zu jammern! Komm!'],
+  [0,'Tá bom. Quantas séries?','Okay. Wie viele Sätze?'],
+  [1,'Quatro séries de dez','Vier Sätze à zehn'],
+  [0,'Me ajuda na última?','Hilfst du mir beim letzten?'],
+  [1,'Claro! Mais uma! Você consegue!','Klar! Noch eine! Du schaffst das!'],
+  [0,'Ufa! Tô acabado','Puh! Ich bin fertig']
+]},
+{ id:'h9', t:'Brasilien planen', e:'✈️', a:'Mitbewohner', b:'Mitbewohner', free:'Plant 2 Minuten auf Portugiesisch, was ihr in der ersten Woche in Brasilien machen wollt.', lines:[
+  [0,'Faltam quantos dias pra viagem?','Wie viele Tage noch bis zur Reise?'],
+  [1,'Poucos! Tô muito animado','Nicht mehr viele! Ich freu mich so'],
+  [0,'Onde a gente vai primeiro? Rio ou São Paulo?','Wohin zuerst? Rio oder São Paulo?'],
+  [1,'Rio! Quero ver o Cristo e ir pra praia','Rio! Ich will den Cristo sehen und an den Strand'],
+  [0,'E depois Florianópolis?','Und danach Florianópolis?'],
+  [1,'Demorou! Lá tem as praias mais bonitas','Klar! Da gibt’s die schönsten Strände'],
+  [0,'Precisamos falar português muito bem até lá','Bis dahin müssen wir richtig gut Portugiesisch können'],
+  [1,'Por isso a gente treina todo dia!','Darum üben wir jeden Tag!']
+]},
+{ id:'h10', t:'Besuch kommt vorbei', e:'💛', a:'Gastgeber', b:'Carol (Besuch)', free:'Wer Carol gespielt hat, stellt jetzt 3 eigene Fragen – der Gastgeber antwortet spontan.', lines:[
+  [1,'Oi! Que apartamento bonito!','Hi! Was für eine schöne Wohnung!'],
+  [0,'Obrigado! Fica à vontade','Danke! Fühl dich wie zu Hause'],
+  [1,'Que cheiro bom! Você cozinhou?','Riecht gut! Hast du gekocht?'],
+  [0,'Cozinhei! Uma receita alemã pra você','Ja! Ein deutsches Rezept für dich'],
+  [1,'Que fofo! Eu adoro provar coisas novas','Wie süß! Ich probier total gern Neues'],
+  [0,'Quer beber alguma coisa? Vinho ou caipirinha?','Willst du was trinken? Wein oder Caipirinha?'],
+  [1,'Uma caipirinha! Você sabe fazer?','Eine Caipirinha! Kannst du die machen?'],
+  [0,'Tô aprendendo… Você me ensina?','Ich lern’s noch… Bringst du’s mir bei?'],
+  [1,'Ensino! Seu português tá ótimo, sabia?','Klar! Dein Portugiesisch ist super, weißt du das?'],
+  [0,'É que eu treino todo dia com meu colega de casa','Ich übe halt jeden Tag mit meinem Mitbewohner']
+]}
+];
+
+// Jeden Tag 3 kleine Aufgaben für die Wohnung ({p} = Name des Mitbewohners)
+const CASA_TASKS = [
+  {e:'☕', de:'Beim Frühstück: Frag {p}, wie er geschlafen hat', pt:'Bom dia! Dormiu bem?'},
+  {e:'🍳', de:'Kündige das Essen auf Portugiesisch an', pt:'Tá pronto! Vem comer!'},
+  {e:'🧂', de:'Lass dir beim Essen etwas reichen – nur auf Portugiesisch', pt:'Me passa o sal?'},
+  {e:'🏠', de:'Frag {p} abends, wie sein Tag war', pt:'Como foi seu dia?'},
+  {e:'🧽', de:'Verhandle auf Portugiesisch, wer abspült', pt:'É sua vez de lavar a louça'},
+  {e:'🗑️', de:'Bitte {p} auf Portugiesisch, den Müll rauszubringen', pt:'Pode tirar o lixo?'},
+  {e:'🍿', de:'Schlag einen Filmabend vor – auf Portugiesisch', pt:'Bora ver um filme?'},
+  {e:'🔑', de:'Wenn du was suchst: frag mit „Cadê …?“', pt:'Cadê a chave?'},
+  {e:'🛒', de:'Frag {p}, ob er was aus dem Supermarkt braucht', pt:'Vou no mercado. Precisa de alguma coisa?'},
+  {e:'🌙', de:'Sag heute Gute Nacht nur auf Portugiesisch', pt:'Vou dormir. Boa noite!'},
+  {e:'💛', de:'Mach {p} ein Kompliment für sein Outfit', pt:'Tá bonito, mano!'},
+  {e:'🤙', de:'Reagier heute 3× mit Slang: „Nossa!“, „Massa!“, „Fala sério!“', pt:'Nossa! Massa! Fala sério!'},
+  {e:'🎙️', de:'Schick {p} eine Sprachnachricht mit 3 Sätzen auf Portugiesisch', pt:'E aí, cara! Tudo bem?'},
+  {e:'💪', de:'Zählt beim Training auf Portugiesisch bis zehn', pt:'Um, dois, três, quatro, cinco, seis, sete, oito, nove, dez'},
+  {e:'🍽️', de:'Plant das Abendessen auf Portugiesisch', pt:'Quem vai cozinhar hoje?'},
+  {e:'🚿', de:'Sag Bescheid, wenn du duschen gehst – auf Portugiesisch', pt:'Vou tomar banho'},
+  {e:'📱', de:'Stell dein Handy für einen Tag auf Portugiesisch (Brasilien)', pt:'Configurações, idioma: português'},
+  {e:'🎶', de:'Hört beim Kochen brasilianische Musik und sprecht eine Zeile nach', pt:'Bora ouvir uma música brasileira?'},
+  {e:'✈️', de:'Redet 2 Minuten auf Portugiesisch über die Reise', pt:'Faltam quantos dias pra viagem?'},
+  {e:'😂', de:'Erzähl {p} einen Witz oder eine Story – nur auf Portugiesisch', pt:'Cara, você não vai acreditar…'},
+  {e:'🆘', de:'Wenn dir ein Wort fehlt: frag nach statt Deutsch zu reden', pt:'Como é que fala …?'}
+];
+
+// Gesprächsthemen für die Português-Zone
+const ZONE_TOPICS = [
+  {de:'Erzähl, was du heute gemacht hast', pt:'Hoje eu…'},
+  {de:'Was kochen wir morgen?', pt:'Amanhã a gente cozinha…'},
+  {de:'Was ist dein Lieblingsessen?', pt:'Minha comida favorita é…'},
+  {de:'Wohin wollt ihr in Brasilien zuerst?', pt:'Primeiro eu quero ir pra…'},
+  {de:'Beschreib dein perfektes Wochenende', pt:'Meu fim de semana perfeito é…'},
+  {de:'Was hast du heute im Training gemacht?', pt:'Hoje eu treinei…'},
+  {de:'Wie war die letzte Party?', pt:'A última festa foi…'},
+  {de:'Was nervt dich gerade in der Wohnung?', pt:'O que me irrita é…'},
+  {de:'Stell dir vor, du lernst am Strand jemanden kennen – spielt es durch', pt:'Oi! Tudo bem? Como você se chama?'},
+  {de:'Bestellt euch gegenseitig Essen wie im Restaurant', pt:'Boa noite! O que vai ser?'},
+  {de:'Was machst du nächste Woche?', pt:'Semana que vem eu vou…'},
+  {de:'Was vermisst du, wenn du in Brasilien bist?', pt:'Eu vou sentir saudade de…'}
+];
+const ZONE_END = 'Acabou! Mandaram muito bem!';
+
+// Zettel für die Wohnung (zum Ausdrucken und Aufkleben)
+const LABELS = [
+  {room:'Küche', pt:'a geladeira', de:'der Kühlschrank', pr:'a sche-la-DEI-ra', ex:'Tem cerveja na geladeira?', exde:'Ist Bier im Kühlschrank?'},
+  {room:'Küche', pt:'o fogão', de:'der Herd', pr:'u fo-GAUN', ex:'Desliga o fogão!', exde:'Mach den Herd aus!'},
+  {room:'Küche', pt:'a pia', de:'die Spüle', pr:'a PI-a', ex:'A pia tá cheia de louça', exde:'Die Spüle ist voller Geschirr'},
+  {room:'Küche', pt:'o micro-ondas', de:'die Mikrowelle', pr:'u mi-kro-ON-das', ex:'Esquenta no micro-ondas', exde:'Wärm es in der Mikrowelle auf'},
+  {room:'Küche', pt:'a cafeteira', de:'die Kaffeemaschine', pr:'a ka-fe-TEI-ra', ex:'Vou fazer café. Quer?', exde:'Ich mach Kaffee. Willst du?'},
+  {room:'Küche', pt:'a lixeira', de:'der Mülleimer', pr:'a li-SCHEI-ra', ex:'Pode tirar o lixo?', exde:'Bringst du den Müll raus?'},
+  {room:'Küche', pt:'a mesa', de:'der Tisch', pr:'a ME-sa', ex:'A comida tá na mesa!', exde:'Das Essen steht auf dem Tisch!'},
+  {room:'Küche', pt:'o armário', de:'der Schrank', pr:'u ar-MA-rju', ex:'Os copos tão no armário', exde:'Die Gläser sind im Schrank'},
+  {room:'Küche', pt:'a gaveta', de:'die Schublade', pr:'a ga-WE-ta', ex:'A faca tá na gaveta', exde:'Das Messer ist in der Schublade'},
+  {room:'Bad', pt:'o espelho', de:'der Spiegel', pr:'u es-PE-lju', ex:'Tô bonito hoje!', exde:'Ich seh heute gut aus!'},
+  {room:'Bad', pt:'o chuveiro', de:'die Dusche', pr:'u schu-WEI-ru', ex:'Vou tomar banho', exde:'Ich geh duschen'},
+  {room:'Bad', pt:'a privada', de:'die Toilette', pr:'a pri-WA-da', ex:'Acabou o papel higiênico!', exde:'Das Klopapier ist alle!'},
+  {room:'Bad', pt:'a toalha', de:'das Handtuch', pr:'a to-A-lja', ex:'Me empresta uma toalha?', exde:'Leihst du mir ein Handtuch?'},
+  {room:'Bad', pt:'a escova de dentes', de:'die Zahnbürste', pr:'a es-KO-wa dschi DEN-tschis', ex:'Vou escovar os dentes', exde:'Ich putz mir die Zähne'},
+  {room:'Bad', pt:'a máquina de lavar', de:'die Waschmaschine', pr:'a MA-ki-na dschi la-WAR', ex:'Tem roupa na máquina', exde:'Da ist Wäsche in der Maschine'},
+  {room:'Wohnzimmer', pt:'o sofá', de:'das Sofa', pr:'u sso-FA', ex:'Bora ver um filme?', exde:'Schauen wir einen Film?'},
+  {room:'Wohnzimmer', pt:'a televisão', de:'der Fernseher', pr:'a te-le-wi-SAUN', ex:'Liga a televisão', exde:'Mach den Fernseher an'},
+  {room:'Wohnzimmer', pt:'a janela', de:'das Fenster', pr:'a scha-NÄ-la', ex:'Abre a janela?', exde:'Machst du das Fenster auf?'},
+  {room:'Wohnzimmer', pt:'a luz', de:'das Licht', pr:'a lus', ex:'Apaga a luz', exde:'Mach das Licht aus'},
+  {room:'Wohnzimmer', pt:'a tomada', de:'die Steckdose', pr:'a to-MA-da', ex:'Cadê meu carregador?', exde:'Wo ist mein Ladekabel?'},
+  {room:'Wohnzimmer', pt:'a planta', de:'die Pflanze', pr:'a PLAN-ta', ex:'Você regou a planta?', exde:'Hast du die Pflanze gegossen?'},
+  {room:'Schlafzimmer', pt:'a cama', de:'das Bett', pr:'a KA-ma', ex:'Vou dormir. Boa noite!', exde:'Ich geh schlafen. Gute Nacht!'},
+  {room:'Schlafzimmer', pt:'o guarda-roupa', de:'der Kleiderschrank', pr:'u GWAR-da HOU-pa', ex:'Que roupa eu coloco?', exde:'Was zieh ich an?'},
+  {room:'Schlafzimmer', pt:'o travesseiro', de:'das Kopfkissen', pr:'u tra-we-SSEI-ru', ex:'Tô morto de sono', exde:'Ich bin todmüde'},
+  {room:'Flur', pt:'a porta', de:'die Tür', pr:'a POR-ta', ex:'Fecha a porta, por favor', exde:'Mach bitte die Tür zu'},
+  {room:'Flur', pt:'a chave', de:'der Schlüssel', pr:'a SCHA-wi', ex:'Cadê a chave?', exde:'Wo ist der Schlüssel?'},
+  {room:'Flur', pt:'os sapatos', de:'die Schuhe', pr:'us ssa-PA-tus', ex:'Tira os sapatos!', exde:'Zieh die Schuhe aus!'}
 ];
 
 // Missionen für die ersten 21 Tage – macht aus der App eine Gewohnheit
