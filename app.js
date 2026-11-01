@@ -74,20 +74,49 @@ function weekXp(dx) {
 const myDx = () => { const o = {}; const min = today() - 90; for (const k in S.days) if (+k >= min && S.days[k].s > 0) o[k] = S.days[k].xp; return o; };
 
 // ---------- Audio ----------
+// Vorrang haben aufgenommene Audiodateien (audio/<hash>.m4a, Stimme Luciana) – die spielt das iPhone
+// auch im Lautlos-Modus und als Home-Bildschirm-App. Die Sprachausgabe des Browsers ist nur Notlösung.
 let VOICE = null;
-const hasTTS = 'speechSynthesis' in window;
+const hasSynth = 'speechSynthesis' in window;
+const hasTTS = true;
+const AUD = new Audio();
+AUD.preload = 'auto';
+try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
 function pickVoice() {
   const v = speechSynthesis.getVoices();
   VOICE = v.find(x => x.lang === 'pt-BR' && /Luciana|Felipe|Google/i.test(x.name)) || v.find(x => /pt[-_]BR/i.test(x.lang)) || v.find(x => /^pt/i.test(x.lang)) || null;
 }
-if (hasTTS) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+if (hasSynth) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
+const cleanSay = t => String(t).replace(/…|\.\.\./g, '').trim();
+function audioKey(t) {
+  let h = 2166136261; const s = cleanSay(t);
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
+  return h.toString(16).padStart(8, '0');
+}
+const RATE = { 0.75: 0.85, 0.9: 1, 1: 1.15 };
+function stopSay() { try { AUD.pause(); } catch (e) {} if (hasSynth) speechSynthesis.cancel(); }
+function synth(t, slow) {
+  if (!hasSynth) return;
+  const go = () => {
+    const u = new SpeechSynthesisUtterance(cleanSay(t).replace(/\s\/\s/g, ', '));
+    u.lang = 'pt-BR'; if (VOICE) u.voice = VOICE;
+    u.rate = slow ? 0.55 : S.set.rate;
+    speechSynthesis.speak(u);
+  };
+  // iOS verschluckt speak() direkt nach cancel() – kurz warten
+  if (speechSynthesis.speaking || speechSynthesis.pending) { speechSynthesis.cancel(); setTimeout(go, 120); } else go();
+}
 function say(t, slow) {
-  if (!hasTTS) return;
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(P(t).replace(/…|\.\.\./g, '').replace(/\s\/\s/g, ', '));
-  u.lang = 'pt-BR'; if (VOICE) u.voice = VOICE;
-  u.rate = slow ? 0.55 : S.set.rate;
-  speechSynthesis.speak(u);
+  const own = P(t), k = audioKey(t);
+  // Sätze mit eigenem Namen (z. B. „Meu nome é …“) gibt es nicht als Aufnahme
+  if (own !== t || typeof AUDIO === 'undefined' || !AUDIO.has(k)) return synth(own, slow);
+  if (hasSynth) speechSynthesis.cancel();
+  AUD.onerror = () => synth(own, slow);
+  AUD.src = 'audio/' + k + '.m4a';
+  AUD.preservesPitch = true;
+  AUD.defaultPlaybackRate = AUD.playbackRate = slow ? 0.7 : (RATE[S.set.rate] || 1);
+  const p = AUD.play();
+  if (p && p.catch) p.catch(() => synth(own, slow));
 }
 window.sayId = (id, slow) => say(BYID[id].pt, slow);
 
@@ -358,7 +387,7 @@ window.startSession = (mode, arg) => {
 function openOverlay() { $('#overlay').hidden = false; document.body.style.overflow = 'hidden'; }
 window.closeOverlay = (ask) => {
   if (ask && SES && SES.i > 0 && SES.i < SES.tasks.length && !confirm('Einheit abbrechen? Dein Fortschritt bis hier bleibt gespeichert.')) return;
-  if (hasTTS) speechSynthesis.cancel();
+  stopSay();
   $('#overlay').hidden = true; $('#overlay').innerHTML = ''; document.body.style.overflow = '';
   SES = null; LQ = null; SC = null; render(); sync();
 };
@@ -718,7 +747,7 @@ function plan() {
     <label class="field"><span>Länge einer Einheit</span><select onchange="S.set.len=+this.value;save()">${[[8, 'Kurz · ca. 3 Min'], [12, 'Normal · ca. 5 Min'], [18, 'Lang · ca. 8 Min']].map(([n, l]) => `<option ${S.set.len === n ? 'selected' : ''} value="${n}">${l}</option>`).join('')}</select></label>
     <label class="field"><span>Sprechtempo</span><select onchange="S.set.rate=+this.value;save();say('Oi, tudo bem? Bora aprender português!')">${[[0.75, 'Langsam'], [0.9, 'Normal'], [1, 'Schnell']].map(([n, l]) => `<option ${S.set.rate === n ? 'selected' : ''} value="${n}">${l}</option>`).join('')}</select></label>
     <button class="btn ghost" onclick="say('Oi, tudo bem? Bora aprender português!')">🔊 Stimme testen</button>
-    ${hasTTS && !VOICE ? `<p class="small mt">Keine brasilianische Stimme gefunden. iPhone: Einstellungen → Bedienungshilfen → Gesprochene Inhalte → Stimmen → Portugiesisch (Brasilien) → „Luciana“ laden.</p>` : ''}
+    <p class="small mt">Kein Ton? Lautstärke-Tasten am iPhone hochdrehen – die Aufnahmen laufen auch im Lautlos-Modus.</p>
   </div>
   <p class="small center" style="margin:20px 0 6px">Bora! · ${CARDS.length} Sätze · ${SCENES.length} Szenen · gespeichert auf deinem Handy</p>
   <p class="center"><button class="small" style="text-decoration:underline" onclick="resetAll()">Alles zurücksetzen</button></p>`;
