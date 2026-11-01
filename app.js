@@ -130,10 +130,27 @@ const IC = {
 };
 const sayBtn = (id, sm) => `<button class="say ${sm ? 'sm' : ''}" onclick="event.stopPropagation();sayId('${id}')" aria-label="Anhören">${IC.spk}</button>`;
 
+// ---------- Wehende Flagge ----------
+// Die Flagge wird in senkrechte Streifen zerlegt, jeder Streifen schwingt etwas versetzt
+// und weiter weg vom Mast stärker – so entsteht die Wellenbewegung.
+function flag(w, n = 22) {
+  const h = Math.round(w * 0.7), sw = w / n;
+  return `<div class="flagwave" style="width:${w}px;height:${h}px">${Array.from({ length: n }, (_, i) =>
+    `<i style="width:${sw + 0.6}px;left:${i * sw}px;background-size:${w}px ${h}px;background-position:${-i * sw}px 0;--d:${(-i * 0.11).toFixed(2)}s;--a:${(1 + i * (8 / n) * w / 170).toFixed(2)}px"></i>`).join('')}</div>`;
+}
+function splash() {
+  if (sessionStorage.getItem('bora.splash')) return;
+  try { sessionStorage.setItem('bora.splash', '1'); } catch (e) {}
+  document.body.insertAdjacentHTML('beforeend', `<div id="splash"><div class="sp-flag">${flag(230, 26)}</div>
+    <div class="sp-title">Bora!</div><div class="sp-sub">Português do Brasil</div></div>`);
+  setTimeout(() => $('#splash').classList.add('out'), 1900);
+  setTimeout(() => $('#splash') && $('#splash').remove(), 2500);
+}
+
 // ---------- Kleinkram ----------
 function toast(t) { const el = $('#toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 2800); }
 function confetti() {
-  const cols = ['#0E7C5A', '#F5B700', '#1E6FD9', '#2BBF8A', '#FFE27A'];
+  const cols = ['#009C3B', '#FFDF00', '#002776', '#ffffff', '#00C24A'];
   for (let i = 0; i < 60; i++) {
     const c = document.createElement('i'); c.className = 'confetti';
     c.style.left = Math.random() * 100 + 'vw'; c.style.background = cols[i % 5];
@@ -209,7 +226,7 @@ function render() {
 // ---------- Start ----------
 function onboarding() {
   return `<div class="onb">
-    <div class="flag">🇧🇷</div>
+    <div class="onb-flag">${flag(170)}</div>
     <h1>Bem-vindo!</h1>
     <p class="sub" style="margin-bottom:22px">Brasilianisches Portugiesisch – jeden Tag ein paar Minuten, zu zweit. Die App plant alles für euch.</p>
     <label class="field"><span>Dein Vorname</span><input id="ob-name" autocomplete="given-name" placeholder="z. B. Jonathan"></label>
@@ -258,7 +275,7 @@ function home() {
       ${pdone ? (done ? '<span class="pill ok">Beide ✓</span>' : '<span class="pill sea">Du bist dran!</span>') : `<button class="pill sea" onclick="nudge()">👉 Anstupsen</button>`}</div></div>`;
   } else {
     partner = `<button class="card tight" style="width:100%;text-align:left" onclick="go('duo')"><div class="pstrip"><div class="avatar av-p">+</div>
-      <div class="grow"><h3>Zu zweit lernen</h3><p class="small">Verbinde dich mit ${esc(pName())} – dann seht ihr euren Fortschritt gegenseitig.</p></div><span class="chev">›</span></div></button>`;
+      <div class="grow"><h3>Zu zweit lernen</h3><p class="small">Verbinde dich mit ${esc(S.partnerName || 'deinem Mitbewohner')} – dann seht ihr euren Fortschritt gegenseitig.</p></div><span class="chev">›</span></div></button>`;
   }
   return `
   <div class="top"><div><p class="sub">${new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
@@ -267,7 +284,7 @@ function home() {
   ${isIOS && !standalone ? `<div class="hint mt">📲 <b>Tipp:</b> Tippe unten in Safari auf <b>Teilen</b> → <b>„Zum Home-Bildschirm“</b>. Dann öffnet sich Bora! wie eine echte App.</div>` : ''}
   ${oc.length ? `<button class="card tight" style="width:100%;text-align:left;background:var(--seaSoft)" onclick="playChallenge('${oc[0].id}')"><div class="row"><div style="font-size:30px">🏆</div><div class="grow"><h3>${esc(pName())} fordert dich heraus!</h3><p class="small">${oc[0].cards.length} Fragen · ${esc(pName())} hat ${oc[0].score}/${oc[0].total} – schaffst du mehr?</p></div><span class="chev">›</span></div></button>` : ''}
   <div class="hero">
-    <div class="sunball"></div>
+    <div class="hero-flag">${flag(104, 16)}</div>
     <svg class="wave" viewBox="0 0 400 46" preserveAspectRatio="none"><path d="M0 20 Q50 0 100 20 T200 20 T300 20 T400 20 V46 H0z" fill="#fff"/></svg>
     <div class="lbl">${done ? 'Heute' : 'Deine Einheit heute'}</div>
     ${done ? `<div class="big">Geschafft! 🎉</div><div class="meta">Deine Serie ist gesichert. Lust auf mehr?</div>
@@ -754,5 +771,6 @@ function plan() {
 }
 window.resetAll = () => { if (confirm('Wirklich alles löschen? Dein ganzer Lernstand geht verloren.')) { localStorage.removeItem(KEY); location.reload(); } };
 
+splash();
 render();
 sync();

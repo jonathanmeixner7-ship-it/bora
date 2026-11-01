@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 700">
+  <defs>
+    <clipPath id="c"><circle cx="500" cy="350" r="175"/></clipPath>
+    <path id="band" d="M318,338 C420,282 575,292 684,388"/>
+  </defs>
+  <rect width="1000" height="700" fill="#009C3B"/>
+  <polygon points="85,350 500,85 915,350 500,615" fill="#FFDF00"/>
+  <circle cx="500" cy="350" r="175" fill="#002776"/>
+  <g clip-path="url(#c)">
+    <use href="#band" fill="none" stroke="#fff" stroke-width="30"/>
+    <text font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="17" letter-spacing="1.5" fill="#009C3B" dy="6">
+      <textPath href="#band" startOffset="50%" text-anchor="middle">ORDEM E PROGRESSO</textPath>
+    </text>
+    <g fill="#fff">
+      <circle cx="455" cy="420" r="6"/><circle cx="520" cy="440" r="5"/><circle cx="565" cy="410" r="5"/>
+      <circle cx="485" cy="470" r="6"/><circle cx="545" cy="485" r="4"/><circle cx="420" cy="452" r="5"/>
+      <circle cx="605" cy="445" r="5"/><circle cx="500" cy="395" r="4"/><circle cx="470" cy="505" r="4"/>
+      <circle cx="530" cy="515" r="5"/><circle cx="390" cy="410" r="4"/><circle cx="625" cy="480" r="4"/>
+      <circle cx="575" cy="345" r="5"/>
+    </g>
+  </g>
+</svg>
