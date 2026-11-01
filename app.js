@@ -74,7 +74,7 @@ function weekXp(dx) {
 const myDx = () => { const o = {}; const min = today() - 90; for (const k in S.days) if (+k >= min && S.days[k].s > 0) o[k] = S.days[k].xp; return o; };
 
 // ---------- Audio ----------
-// Vorrang haben aufgenommene Audiodateien (audio/<hash>.m4a, Stimme Luciana) – die spielt das iPhone
+// Vorrang haben aufgenommene Audiodateien (audio-antonio/<hash>.m4a, Studio-Stimme Antonio) – die spielt das iPhone
 // auch im Lautlos-Modus und als Home-Bildschirm-App. Die Sprachausgabe des Browsers ist nur Notlösung.
 let VOICE = null;
 const hasSynth = 'speechSynthesis' in window;
@@ -84,7 +84,7 @@ AUD.preload = 'auto';
 try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
 function pickVoice() {
   const v = speechSynthesis.getVoices();
-  VOICE = v.find(x => x.lang === 'pt-BR' && /Luciana|Felipe|Google/i.test(x.name)) || v.find(x => /pt[-_]BR/i.test(x.lang)) || v.find(x => /^pt/i.test(x.lang)) || null;
+  VOICE = v.find(x => /pt[-_]BR/i.test(x.lang) && /Felipe/i.test(x.name)) || v.find(x => x.lang === 'pt-BR' && /Luciana|Google/i.test(x.name)) || v.find(x => /pt[-_]BR/i.test(x.lang)) || v.find(x => /^pt/i.test(x.lang)) || null;
 }
 if (hasSynth) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
 const cleanSay = t => String(t).replace(/…|\.\.\./g, '').trim();
@@ -112,7 +112,7 @@ function say(t, slow) {
   if (own !== t || typeof AUDIO === 'undefined' || !AUDIO.has(k)) return synth(own, slow);
   if (hasSynth) speechSynthesis.cancel();
   AUD.onerror = () => synth(own, slow);
-  AUD.src = 'audio/' + k + '.m4a';
+  AUD.src = 'audio-antonio/' + k + '.m4a';
   AUD.preservesPitch = true;
   AUD.defaultPlaybackRate = AUD.playbackRate = slow ? 0.7 : (RATE[S.set.rate] || 1);
   const p = AUD.play();
