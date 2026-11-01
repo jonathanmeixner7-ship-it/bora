@@ -1,6 +1,6 @@
 // Service Worker: macht Bora! installierbar und offline nutzbar (erst Netz, sonst Zwischenspeicher)
-const C = 'bora-v8';
-self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(C).then(c => c.addAll(['./', 'index.html', 'style.css?v=8', 'data.js?v=8', 'app.js?v=8', 'audio.js?v=8', 'icon-192.png', 'flag.svg']))); });
+const C = 'bora-v9';
+self.addEventListener('install', e => { self.skipWaiting(); e.waitUntil(caches.open(C).then(c => c.addAll(['./', 'index.html', 'style.css?v=9', 'data.js?v=9', 'app.js?v=9', 'audio.js?v=9', 'icon-192.png', 'flag.svg']))); });
 self.addEventListener('activate', e => e.waitUntil(self.clients.claim()));
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET' || !e.request.url.startsWith(self.location.origin)) return;
