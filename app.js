@@ -294,6 +294,7 @@ function home() {
       <div class="meta">ca. ${mins} Minuten · alles automatisch geplant</div>
       <div class="btns"><button class="btn white" onclick="startSession('daily')">Los geht’s</button><button class="btn ghost" onclick="startSession('quick')">⚡ 1 Minute</button></div>`}
   </div>
+  <button class="card tight swhome" onclick="swipeStart()"><div class="row"><div class="swicon">👆</div><div class="grow"><h3>Swipen</h3><p class="small">Karten wischen wie bei Tinder – rechts kann ich, links nochmal. Mit Stimme.</p></div><span class="chev">›</span></div></button>
   ${partner}
   ${S.zr ? zoneBanner() : `<button class="card tight" style="width:100%;text-align:left" onclick="go('casa')"><div class="pstrip"><div style="font-size:30px">🏠</div>
     <div class="grow"><h3>Heute in der Wohnung</h3><p class="small">${S.ct && S.ct.d === d ? S.ct.done.length : 0}/3 Aufgaben · Rollenspiele · Português-Zone</p></div><span class="chev">›</span></div></button>`}
@@ -348,7 +349,7 @@ function unitView(uid) {
   <div class="bar mt"><i style="width:${p.pct}%;background:${u.c}"></i></div>
   <div class="hint mt">💡 ${esc(u.tip)}</div>
   <div class="btns" style="margin-bottom:8px"><button class="btn" onclick="startSession('unit','${uid}')">Thema üben</button>
-    <button class="btn ghost" onclick="setFocus('${uid}')">${S.focus === uid ? '✓ Fokus' : '🎯 Als Fokus'}</button></div>
+    <button class="btn sun" onclick="swipeStart('${uid}')">👆 Swipen</button></div><div class="btns" style="margin:-4px 0 8px"><button class="btn ghost" onclick="setFocus('${uid}')">${S.focus === uid ? '✓ Fokus' : '🎯 Als Fokus'}</button></div>
   <p class="small" style="margin:0 4px 14px">Fokus = neue Sätze in deiner Tageseinheit kommen zuerst aus diesem Thema.</p>
   ${sc.length ? `<div class="list">${sc.map(s => `<button class="li" onclick="playScene('${s.id}')"><div style="font-size:26px">${s.e}</div><div class="grow"><div class="pt">Szene: ${esc(s.t)}</div><div class="de">Rollenspiel mit ${esc(s.who)}</div></div><span class="chev">›</span></button>`).join('')}</div>` : ''}
   <div class="list">${u.items.map((_, i) => { const c = BYID[uid + '-' + i]; return `<div class="li">
@@ -409,7 +410,7 @@ window.closeOverlay = (ask) => {
   if (ask && SES && SES.i > 0 && SES.i < SES.tasks.length && !confirm('Einheit abbrechen? Dein Fortschritt bis hier bleibt gespeichert.')) return;
   stopSay();
   $('#overlay').hidden = true; $('#overlay').innerHTML = ''; document.body.style.overflow = '';
-  SES = null; LQ = null; SC = null; HS = null; clearInterval(ZT); render(); sync();
+  SES = null; LQ = null; SC = null; HS = null; SW = null; clearInterval(ZT); render(); sync();
 };
 function frame(body, foot = '') {
   const pct = SES ? Math.round((SES.i / SES.tasks.length) * 100) : 0;
@@ -710,6 +711,92 @@ function liveEnd() {
     </div><div class="sfoot"><button class="btn" onclick="closeOverlay()">Fertig</button></div></div>`;
   save();
 }
+
+// ---------- Swipe: Karten wischen wie bei Tinder/TikTok ----------
+// rechts = kann ich, links = nochmal (kommt gleich wieder), Antippen = umdrehen. Die Stimme spricht jede Karte automatisch.
+let SW = null;
+function swipeQueue(uid) {
+  const pool = uid ? CARDS.filter(c => c.u === uid) : CARDS;
+  const due = shuffle(dueCards(pool));
+  const known = shuffle(pool.filter(c => box(c.id) >= 1 && !due.includes(c))).slice(0, 30);
+  const news = unseen(pool).slice(0, Math.max(uid ? 12 : 8, 20 - known.length - due.length));
+  const q = due.slice(0, 25), n = news.slice();
+  known.forEach((c, i) => { q.push(c); if (i % 3 === 1 && n.length) q.push(n.shift()); });
+  return q.concat(n).map(c => c.id);
+}
+window.swipeStart = uid => {
+  const q = swipeQueue(uid);
+  if (!q.length) { toast('Keine Karten in diesem Thema'); return; }
+  SW = { q, n: 0, ok: 0, combo: 0, best: 0, xp: 0, flip: false, counted: false, uid };
+  openOverlay(); drawSwipe();
+};
+function swCard(id, top) {
+  const c = BYID[id], u = UNIT[c.u], isNew = box(id) < 1;
+  return `<div class="swc ${top ? 'top' : 'under'} ${top && SW.flip ? 'flip' : ''}" ${top ? 'id="swc"' : ''} style="--uc:${u.c}">
+    <div class="sw-in"><div class="sw-face">
+      <div class="row between"><span class="sw-chip">${u.e} ${esc(u.t)}</span>${isNew ? '<span class="sw-chip new">NEU</span>' : ''}</div>
+      <div class="sw-pt">${esc(P(c.pt))}</div><div class="sw-pr">🗣 ${esc(c.pr)}</div>
+      <div class="sw-hint">Antippen für Deutsch</div></div>
+    <div class="sw-face back"><div class="sw-chip">🇩🇪 Bedeutung</div><div class="sw-de">${esc(c.de)}</div><div class="sw-pt2">${esc(P(c.pt))}</div>${c.tip ? `<div class="sw-tip">💡 ${esc(c.tip)}</div>` : ''}</div></div>
+    <div class="stamp yes">KANN ICH</div><div class="stamp no">NOCHMAL</div></div>`;
+}
+function drawSwipe() {
+  if (SW.n >= SW.q.length) return swipeEnd();
+  const id = SW.q[SW.n], nx = SW.q[SW.n + 1];
+  $('#overlay').innerHTML = `<div class="sx swx"><div class="shead"><button class="x" onclick="swipeEnd()">✕</button>
+    <div class="grow center sw-stats"><b>${SW.n}</b> gewischt · <b>${SW.xp}</b> XP</div><div class="sw-combo ${SW.combo >= 3 ? 'hot' : ''}">🔥 ${SW.combo}</div></div>
+    <div class="swstack">${nx ? swCard(nx, false) : ''}${swCard(id, true)}</div>
+    <div class="swbtns"><button class="swb no" onclick="swGo(-1)" aria-label="Nochmal">✕</button><button class="swb spk" onclick="sayId('${id}')" aria-label="Anhören">${IC.spk}</button><button class="swb yes" onclick="swGo(1)" aria-label="Kann ich">✓</button></div>
+    <p class="small center" style="margin-top:10px">← nochmal · antippen = umdrehen · kann ich →</p></div>`;
+  swDrag($('#swc'));
+  sayId(id);
+}
+function swDrag(el) {
+  let x0 = 0, y0 = 0, dx = 0, dy = 0, on = false;
+  el.addEventListener('pointerdown', e => { on = true; x0 = e.clientX; y0 = e.clientY; dx = dy = 0; try { el.setPointerCapture(e.pointerId); } catch (_) {} el.style.transition = 'none'; });
+  el.addEventListener('pointermove', e => {
+    if (!on) return; dx = e.clientX - x0; dy = e.clientY - y0;
+    el.style.transform = `translate(${dx}px,${dy * .3}px) rotate(${dx / 18}deg)`;
+    el.style.setProperty('--yes', Math.max(0, Math.min(1, dx / 110))); el.style.setProperty('--no', Math.max(0, Math.min(1, -dx / 110)));
+  });
+  el.addEventListener('pointerup', () => {
+    if (!on) return; on = false; el.style.transition = '';
+    if (Math.abs(dx) > 90) return swGo(dx > 0 ? 1 : -1);
+    el.style.transform = ''; el.style.setProperty('--yes', 0); el.style.setProperty('--no', 0);
+    if (Math.abs(dx) < 6 && Math.abs(dy) < 6) { SW.flip = !SW.flip; el.classList.toggle('flip', SW.flip); if (!SW.flip) sayId(SW.q[SW.n]); }
+  });
+}
+window.swGo = dir => {
+  if (!SW || SW.busy) return;
+  const id = SW.q[SW.n], el = $('#swc'), s = S.cards[id] || (S.cards[id] = { b: 0, due: today(), r: 0, w: 0 });
+  if (dir > 0) {
+    if (s.b < 1) { s.b = 1; s.due = today() + 1; dayRec(today()).n++; }
+    else if (s.due <= today()) { s.b = Math.min(INT.length - 1, s.b + 1); s.due = today() + INT[s.b]; }
+    s.r++; SW.ok++; SW.combo++; SW.best = Math.max(SW.best, SW.combo);
+    SW.xp += SW.combo >= 5 ? 8 : 5; S.prio = S.prio.filter(x => x !== id);
+  } else {
+    if (s.b >= 1) { s.w++; s.b = 1; s.due = today(); }
+    SW.combo = 0; SW.q.splice(Math.min(SW.q.length, SW.n + 5), 0, id);   // kommt ein paar Karten später wieder
+  }
+  SW.n++; SW.flip = false; save();
+  if (SW.n === 10 && !SW.counted) { SW.counted = true; const was = finishDay(SW.xp); SW.xp = 0; SW.banked = true; toast(was ? '⚡ 10 Karten – weiter so!' : '🔥 Tag gesichert! Swipe ruhig weiter'); }
+  if ([5, 10, 20].includes(SW.combo) && dir > 0) { confetti(); toast(`🔥 ${SW.combo}er Combo!`); }
+  if (el) { SW.busy = true; el.style.transition = 'transform .28s ease, opacity .28s'; el.style.transform = `translate(${dir * 520}px,-40px) rotate(${dir * 28}deg)`; el.style.opacity = 0;
+    el.style.setProperty(dir > 0 ? '--yes' : '--no', 1); setTimeout(() => { SW.busy = false; drawSwipe(); }, 240); }
+  else drawSwipe();
+};
+function swipeEnd() {
+  const s = SW; if (!s) return closeOverlay();
+  if (s.xp) finishDay(s.xp);
+  if (!s.n) return closeOverlay();
+  confetti();
+  $('#overlay').innerHTML = `<div class="sx"><div class="sbody end"><div class="trophy">👆</div><h1>${s.n} Karten gewischt</h1>
+    <p class="sub">${s.ok} gekonnt · beste Combo 🔥 ${s.best}</p><p class="sub">Was du nach links gewischt hast, kommt in den nächsten Einheiten wieder.</p>
+    <p class="sub mt">Serie: 🔥 ${streakOf(myDays())}</p></div>
+    <div class="sfoot"><div class="btns" style="margin:0"><button class="btn ghost" onclick="swipeStart(SW.uid)">Weiter swipen</button><button class="btn" onclick="closeOverlay()">Fertig</button></div></div></div>`;
+  s.xp = 0;
+}
+window.swipeEnd = swipeEnd;
 
 // ---------- Casa: Portugiesisch zu Hause ----------
 const casaTasks = () => { const d = today(), n = CASA_TASKS.length, a = [];
