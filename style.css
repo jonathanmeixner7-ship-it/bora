@@ -428,3 +428,68 @@ body{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
 #splash .sp-title{font-family:var(--display);font-style:italic;font-weight:500;font-size:68px}
 #splash .sp-sub{font-size:12px;letter-spacing:.3em}
 .onb h1{font-size:42px}
+
+/* ---------- Animationen ---------- */
+/* Strand im Startkasten */
+.hero .beach{position:absolute;right:0;top:0;width:150px;height:178px;pointer-events:none;z-index:0}
+.hero>:not(.beach):not(.bwaves){z-index:1}
+.bsun{position:absolute;right:30px;top:22px;width:70px;height:70px;border-radius:50%;
+  background:radial-gradient(circle at 45% 40%,#FFE7A0 0%,#F5B02E 45%,#E2603F 100%);
+  box-shadow:0 0 40px 10px rgba(245,176,46,.35);animation:sunGlow 6s ease-in-out infinite}
+@keyframes sunGlow{50%{box-shadow:0 0 56px 18px rgba(245,176,46,.5);transform:translateY(3px)}}
+.bpalm{position:absolute;right:26px;top:6px;width:120px;height:170px;overflow:visible}
+.bpalm .trunk{transform-origin:78px 172px;animation:palmSway 5s ease-in-out infinite}
+.bpalm .crown{transform-origin:58px 64px;animation:crownSway 3.2s ease-in-out infinite}
+@keyframes palmSway{0%,100%{transform:rotate(-1.5deg)}50%{transform:rotate(1.5deg)}}
+@keyframes crownSway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+.bflag{position:absolute;right:8px;top:72px}
+.bflag .pole{position:absolute;left:-2px;top:-2px;width:2.5px;height:70px;border-radius:2px;background:linear-gradient(#E9E2D2,#9C9481)}
+.bflag .flagwave{margin-left:1px}
+.hero .bwaves{position:absolute;left:0;bottom:5px;width:200%;height:34px;pointer-events:none;z-index:0;animation:waveRun 14s linear infinite}
+.bwaves .w1{fill:rgba(127,169,232,.13)}
+.bwaves .w2{fill:rgba(255,255,255,.07);animation:waveRun2 9s linear infinite}
+@keyframes waveRun{to{transform:translateX(-50%)}}
+@keyframes waveRun2{50%{transform:translateX(-60px)}}
+.hero .big,.hero .lbl,.hero .meta{max-width:58%}
+
+/* Caipirinha-Glas */
+.shead{gap:10px}
+.caip{width:34px;height:40px;flex:none;color:var(--ink);overflow:visible}
+.caip .liq{fill:#CFE9A3;transition:y .5s ease}
+@media (prefers-color-scheme: dark){.caip .liq{fill:#7FB850}}
+.caip .lime{opacity:0}
+.caip.drop .lime{animation:limeDrop .7s cubic-bezier(.5,0,.7,1)}
+@keyframes limeDrop{0%{opacity:1;transform:translateY(-26px) rotate(0)}70%{opacity:1}100%{opacity:0;transform:translateY(16px) rotate(200deg)}}
+.caip.drop{animation:glassJiggle .5s .45s ease}
+@keyframes glassJiggle{30%{transform:rotate(-6deg)}60%{transform:rotate(4deg)}}
+.caip .lime{transform-box:fill-box;transform-origin:center}
+
+/* Samba-Tänzerin */
+.end .trophy .samba{width:150px;height:175px;display:block;margin:-10px auto -6px;overflow:visible}
+.samba .sglow{fill:color-mix(in srgb,var(--sun) 22%,transparent)}
+.samba .fan{animation:fanOpen .9s cubic-bezier(.2,1.4,.4,1) both}
+.samba .fan>ellipse{animation:shimmer 1.4s ease-in-out infinite alternate}
+.samba .fan>ellipse:nth-child(even){animation-delay:.35s}
+@keyframes fanOpen{from{transform:translate(75px,56px) scale(.1) rotate(-30deg);opacity:0}to{transform:translate(75px,56px) scale(1);opacity:1}}
+@keyframes shimmer{to{opacity:.72}}
+.samba .hips{transform-origin:75px 100px;animation:hips .5s ease-in-out infinite alternate}
+@keyframes hips{from{transform:rotate(-5deg) translateX(-2px)}to{transform:rotate(5deg) translateX(2px)}}
+.samba .arm{animation:armL .5s ease-in-out infinite alternate}
+.samba .arm.l{transform-origin:70px 76px}
+.samba .arm.r{transform-origin:80px 76px;animation-name:armR}
+@keyframes armL{to{transform:rotate(-12deg)}}
+@keyframes armR{to{transform:rotate(12deg)}}
+.samba .dancer{animation:bounce .5s ease-in-out infinite alternate}
+@keyframes bounce{to{transform:translateY(-3px)}}
+
+/* Flug München → Rio */
+.flight{display:block;width:100%;height:auto;margin:6px 0 4px;overflow:visible}
+.flight text{font-size:10px;font-weight:800;letter-spacing:.14em;fill:var(--ink2);font-family:"Plus Jakarta Sans",sans-serif}
+.flight .plane{animation:planeBob 2.4s ease-in-out infinite}
+@keyframes planeBob{50%{transform:translateY(-3px)}}
+.flight .rio{animation:rioPulse 2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes rioPulse{50%{transform:scale(1.4);opacity:.7}}
+
+@media (prefers-reduced-motion: reduce){
+  .bsun,.bpalm *,.bwaves,.bwaves *,.samba *,.flight *,.caip *{animation:none!important}
+}

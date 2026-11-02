@@ -285,7 +285,7 @@ function home() {
   ${isIOS && !standalone ? `<div class="hint mt">📲 <b>Tipp:</b> Tippe unten in Safari auf <b>Teilen</b> → <b>„Zum Home-Bildschirm“</b>. Dann öffnet sich Bora! wie eine echte App.</div>` : ''}
   ${oc.length ? `<button class="card tight" style="width:100%;text-align:left;background:var(--seaSoft)" onclick="playChallenge('${oc[0].id}')"><div class="row"><div style="font-size:30px">🏆</div><div class="grow"><h3>${esc(pName())} fordert dich heraus!</h3><p class="small">${oc[0].cards.length} Fragen · ${esc(pName())} hat ${oc[0].score}/${oc[0].total} – schaffst du mehr?</p></div><span class="chev">›</span></div></button>` : ''}
   <div class="hero">
-    <div class="hero-flag">${flag(104, 16)}</div>
+    ${beach()}
     <svg class="wave" viewBox="0 0 400 46" preserveAspectRatio="none"><path d="M0 20 Q50 0 100 20 T200 20 T300 20 T400 20 V46 H0z" fill="#fff"/></svg>
     <div class="lbl">${done ? 'Heute' : 'Deine Einheit heute'}</div>
     ${done ? `<div class="big">Geschafft! 🎉</div><div class="meta">Deine Serie ist gesichert. Lust auf mehr?</div>
@@ -414,7 +414,7 @@ window.closeOverlay = (ask) => {
 };
 function frame(body, foot = '') {
   const pct = SES ? Math.round((SES.i / SES.tasks.length) * 100) : 0;
-  $('#overlay').innerHTML = `<div class="sx"><div class="shead"><button class="x" onclick="closeOverlay(1)">✕</button><div class="prog"><i style="width:${pct}%"></i></div></div>
+  $('#overlay').innerHTML = `<div class="sx"><div class="shead"><button class="x" onclick="closeOverlay(1)">✕</button><div class="prog"><i style="width:${pct}%"></i></div>${caip(pct)}</div>
     <div class="sbody">${body}</div><div class="sfoot" id="foot">${foot}</div></div>`;
 }
 function options(c, field) {
@@ -506,7 +506,7 @@ function feedback(ok, note = '') {
   const t = SES.cur.t, c = t.c, s = S.cards[c.id] || (S.cards[c.id] = { b: 0, due: today(), r: 0, w: 0 });
   SES.tot++;
   if (ok) {
-    SES.ok++; SES.xp += t.retry ? 5 : 10; s.r++;
+    SES.ok++; SES.xp += t.retry ? 5 : 10; s.r++; limeDrop();
     if (t.retry) s.due = today() + 1;
     else if (!t.bonus) { s.b = Math.min(INT.length - 1, s.b + 1); s.due = today() + INT[s.b]; }
     S.prio = S.prio.filter(id => id !== c.id);
@@ -540,7 +540,7 @@ function endSession() {
   confetti();
   const pdone = S.partner && partnerDays().has(today());
   $('#overlay').innerHTML = `<div class="sx"><div class="sbody end">
-    <div class="trophy">${acc >= 90 ? '🏆' : acc >= 60 ? '🌟' : '💪'}</div>
+    <div class="trophy">${samba()}</div>
     <h1>${acc >= 90 ? 'Sensacional!' : acc >= 60 ? 'Muito bem!' : 'Dranbleiben zahlt sich aus!'}</h1>
     <p class="sub">${!wasDone ? `Tag gesichert – deine Serie: 🔥 ${streak}` : 'Extra-Runde geschafft!'}</p>
     <div class="xpbig">+${xp} XP</div>
@@ -561,7 +561,7 @@ function drawScene() {
   const pct = Math.round((SC.i / s.steps.length) * 100);
   const bubbles = SC.log.map(b => `<div class="bubble ${b.me ? 'me' : 'them'}">${esc(P(b.pt))}${b.de ? `<div class="t2">${esc(b.de)}</div>` : ''}</div>`).join('');
   const cur = step ? `<div class="bubble them"><div class="row" style="gap:8px"><span class="grow">${esc(P(step.them))}</span><button class="say sm" onclick="say(SC.s.steps[SC.i].them)">${IC.spk}</button></div><div class="t2">${esc(step.de)}</div></div>` : '';
-  $('#overlay').innerHTML = `<div class="sx"><div class="shead"><button class="x" onclick="closeOverlay()">✕</button><div class="prog"><i style="width:${pct}%"></i></div></div>
+  $('#overlay').innerHTML = `<div class="sx"><div class="shead"><button class="x" onclick="closeOverlay()">✕</button><div class="prog"><i style="width:${pct}%"></i></div>${caip(pct)}</div>
     <div class="kind">${s.e} ${esc(s.t)} · mit ${esc(s.who)}</div>
     <div class="sbody"><div class="chat" id="chat">${bubbles}${cur}</div>
     ${step ? `<p class="small" style="margin:16px 0 0">Was antwortest du?</p><div class="opts">${shuffle(step.opts.map((o, i) => i)).map(i => `<button class="opt" id="so${i}" onclick="sceneAns(${i})">${esc(P(step.opts[i]))}</button>`).join('')}</div>` : ''}
@@ -790,13 +790,73 @@ function swipeEnd() {
   if (s.xp) finishDay(s.xp);
   if (!s.n) return closeOverlay();
   confetti();
-  $('#overlay').innerHTML = `<div class="sx"><div class="sbody end"><div class="trophy">👆</div><h1>${s.n} Karten gewischt</h1>
+  $('#overlay').innerHTML = `<div class="sx"><div class="sbody end"><div class="trophy">${samba()}</div><h1>${s.n} Karten gewischt</h1>
     <p class="sub">${s.ok} gekonnt · beste Combo 🔥 ${s.best}</p><p class="sub">Was du nach links gewischt hast, kommt in den nächsten Einheiten wieder.</p>
     <p class="sub mt">Serie: 🔥 ${streakOf(myDays())}</p></div>
     <div class="sfoot"><div class="btns" style="margin:0"><button class="btn ghost" onclick="swipeStart(SW.uid)">Weiter swipen</button><button class="btn" onclick="closeOverlay()">Fertig</button></div></div></div>`;
   s.xp = 0;
 }
 window.swipeEnd = swipeEnd;
+
+// ---------- Animationen: Strand, Caipirinha, Samba, Flug ----------
+// Strand-Szene im Startkasten: Sonnenuntergang, wiegende Palme, wehende Flagge, Wellen
+const LEAF = 'M0 0 C14 -17 38 -15 52 9 C36 -1 16 -3 0 0Z';
+function beach() {
+  const leaves = [[-172, 1], [-140, .95], [-105, .8], [-62, .85], [-25, 1], [8, .9]].map(([a, k]) => `<path d="${LEAF}" transform="rotate(${a}) scale(${k})"/>`).join('');
+  return `<div class="beach" aria-hidden="true">
+    <div class="bsun"></div>
+    <svg class="bpalm" viewBox="0 0 120 170"><g class="trunk"><path d="M78 172 C80 132 74 96 58 64" fill="none" stroke="#04170F" stroke-width="7" stroke-linecap="round"/>
+      <path d="M76 150 l6 -2 M76 132 l6 -1 M74 114 l6 0 M69 97 l6 1 M64 81 l5 2" stroke="#0B3B27" stroke-width="1.6"/>
+      <g class="crown" fill="#04170F"><g transform="translate(58 64)">${leaves}</g><circle cx="55" cy="68" r="4"/><circle cx="62" cy="69" r="3.6"/></g></g></svg>
+    <div class="bflag"><i class="pole"></i>${flag(44, 10)}</div>
+  </div>
+  <svg class="bwaves" viewBox="0 0 1600 40" preserveAspectRatio="none" aria-hidden="true">
+    <path class="w1" d="M0 18 Q100 4 200 18 T400 18 T600 18 T800 18 T1000 18 T1200 18 T1400 18 T1600 18 V40 H0Z"/>
+    <path class="w2" d="M0 26 Q100 14 200 26 T400 26 T600 26 T800 26 T1000 26 T1200 26 T1400 26 T1600 26 V40 H0Z"/></svg>`;
+}
+// Caipirinha-Glas: füllt sich mit dem Fortschritt, bei jeder richtigen Antwort fällt eine Limette hinein
+function caip(p) {
+  const y = 9 + 28 * (1 - p / 100);
+  return `<svg class="caip" viewBox="0 0 36 42" aria-hidden="true"><defs><clipPath id="cg"><path d="M5 8 L31 8 L28 37 Q27.5 39 25.5 39 L10.5 39 Q8.5 39 8 37Z"/></clipPath></defs>
+    <g clip-path="url(#cg)"><rect class="liq" x="0" y="${y.toFixed(1)}" width="36" height="40"/><rect x="11" y="${(y + 3).toFixed(1)}" width="7" height="7" rx="1.5" transform="rotate(12 14 ${y + 6})" fill="#fff" opacity=".55"/><rect x="19" y="${(y + 7).toFixed(1)}" width="6" height="6" rx="1.5" transform="rotate(-10 22 ${y + 10})" fill="#fff" opacity=".45"/></g>
+    <path d="M5 8 L31 8 L28 37 Q27.5 39 25.5 39 L10.5 39 Q8.5 39 8 37Z" fill="none" stroke="currentColor" stroke-width="1.6" opacity=".55"/>
+    <line x1="24" y1="2" x2="20" y2="30" stroke="#E2603F" stroke-width="1.8" stroke-linecap="round"/>
+    <g transform="translate(30 8)"><circle r="5.5" fill="#5FB82E"/><circle r="4" fill="#C9EE8F"/><path d="M0 -4V4M-4 0H4M-2.8 -2.8L2.8 2.8M2.8 -2.8L-2.8 2.8" stroke="#5FB82E" stroke-width=".7"/></g>
+    <circle class="lime" cx="18" cy="12" r="4" fill="#5FB82E" stroke="#C9EE8F" stroke-width="1.4"/></svg>`;
+}
+function limeDrop() { const g = document.querySelector('.caip'); if (!g) return; g.classList.remove('drop'); void g.getBoundingClientRect(); g.classList.add('drop'); }
+// Samba-Tänzerin mit Federkrone – tanzt bei Erfolgen
+function samba() {
+  const cols = ['#009C3B', '#F5B02E', '#E2603F', '#1D4E89', '#FFDF00', '#E2603F', '#1D4E89', '#F5B02E', '#009C3B'];
+  const fe = cols.map((c, i) => `<ellipse cx="0" cy="-30" rx="6.5" ry="30" fill="${c}" transform="rotate(${-80 + i * 20})"/>`).join('');
+  return `<svg class="samba" viewBox="0 0 150 175" aria-hidden="true">
+    <circle cx="75" cy="92" r="64" class="sglow"/>
+    <g class="dancer">
+      <g class="fan" transform="translate(75 56)">${fe}<circle r="9" fill="#FFDF00"/></g>
+      <g class="hips">
+        <path class="arm l" d="M70 76 Q56 66 48 46" fill="none" stroke="#8D5A3B" stroke-width="6" stroke-linecap="round"/>
+        <path class="arm r" d="M80 76 Q95 70 104 52" fill="none" stroke="#8D5A3B" stroke-width="6" stroke-linecap="round"/>
+        <circle cx="75" cy="61" r="10" fill="#8D5A3B"/><path d="M66 60 Q75 47 84 60 Q80 54 75 54 Q70 54 66 60Z" fill="#2B1A10"/>
+        <path d="M66 72 L84 72 L81 96 L69 96Z" fill="#E2603F"/><path d="M69 80 L81 80 L80.5 86 L69.5 86Z" fill="#8D5A3B"/>
+        <path d="M64 96 L86 96 L102 132 L48 132Z" fill="#F5B02E"/>
+        <path d="M52 132 l-2 8 M60 132 l-1 9 M68 132 v9 M76 132 v9 M84 132 l1 9 M92 132 l2 8 M99 132 l3 7" stroke="#F5B02E" stroke-width="2.4" stroke-linecap="round"/>
+        <path d="M70 134 L64 168 M81 134 L90 166" stroke="#8D5A3B" stroke-width="7" stroke-linecap="round"/></g></g></svg>`;
+}
+// Flug München → Rio: das Flugzeug wandert mit jedem Tag weiter
+function flight(td) {
+  const el = Math.max(0, today() - S.start), p = Math.max(.04, Math.min(1, td > 0 ? el / (el + td) : 1));
+  const P0 = [22, 58], P1 = [160, -22], P2 = [298, 58];
+  const q = (a, b, c, t) => (1 - t) * (1 - t) * a + 2 * (1 - t) * t * b + t * t * c;
+  const x = q(P0[0], P1[0], P2[0], p), y = q(P0[1], P1[1], P2[1], p);
+  const dx = 2 * (1 - p) * (P1[0] - P0[0]) + 2 * p * (P2[0] - P1[0]), dy = 2 * (1 - p) * (P1[1] - P0[1]) + 2 * p * (P2[1] - P1[1]);
+  const ang = Math.atan2(dy, dx) * 180 / Math.PI, d = `M${P0} Q${P1} ${P2}`;
+  return `<svg class="flight" viewBox="0 0 320 80" aria-hidden="true">
+    <path d="${d}" fill="none" stroke="var(--line)" stroke-width="2" stroke-dasharray="3 6" stroke-linecap="round"/>
+    <path d="${d}" fill="none" stroke="var(--green)" stroke-width="2.5" pathLength="1" stroke-dasharray="${p} 1" stroke-linecap="round"/>
+    <circle cx="22" cy="58" r="5" fill="var(--green)"/><circle cx="298" cy="58" r="5" fill="var(--sun)" class="rio"/>
+    <text x="22" y="77" text-anchor="middle">MUC</text><text x="298" y="77" text-anchor="middle">RIO</text>
+    <g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${ang.toFixed(1)})"><g class="plane"><path d="M10 0 L-6 -2.2 L-10 -9 L-13 -9 L-10 -1.8 L-15 -1.4 L-17 -5 L-19 -5 L-18 0 L-19 5 L-17 5 L-15 1.4 L-10 1.8 L-13 9 L-10 9 L-6 2.2Z" fill="var(--ink)"/></g></g></svg>`;
+}
 
 // ---------- Casa: Portugiesisch zu Hause ----------
 const casaTasks = () => { const d = today(), n = CASA_TASKS.length, a = [];
@@ -943,7 +1003,7 @@ function zoneEnd() {
   const [a, b] = z.k, names = [S.me.name, pName()];
   const verdict = a === b ? '🤝 Unentschieden: heute spült ihr zusammen' : `🍽️ ${esc(names[a > b ? 0 : 1])} spült heute ab`;
   confetti(); save();
-  $('#overlay').innerHTML = `<div class="sx"><div class="sbody end"><div class="trophy">🇧🇷</div><h1>${min} Minuten nur Portugiesisch!</h1>
+  $('#overlay').innerHTML = `<div class="sx"><div class="sbody end"><div class="trophy">${samba()}</div><h1>${min} Minuten nur Portugiesisch!</h1>
     <p class="sub">${a + b === 0 ? 'Kein einziges deutsches Wort – wie echte Brasilianer!' : `Deutsch-Punkte: ${esc(names[0])} ${a} · ${esc(names[1])} ${b}`}</p>
     <div class="xpbig">+${Math.min(120, min * 3)} XP</div>${!wasDone ? `<p class="sub">Zählt als Einheit für heute ✓</p>` : ''}
     ${a + b ? `<div class="card mt"><h3>${verdict}</h3></div>` : ''}
@@ -963,7 +1023,7 @@ function plan() {
   const nowIdx = phases.findIndex(p => p[3]);
   const ics = (f, l, t) => `<a class="li" href="${f}" target="_blank" style="text-decoration:none;color:inherit"><div class="t" style="font-weight:800;color:var(--green);width:54px">${t}</div><div class="grow"><div class="pt">${l}</div></div><span class="pill ok">+ Kalender</span></a>`;
   return `<h1>Euer Plan</h1><p class="sub">Damit Portugiesisch so normal wird wie Zähneputzen.</p>
-  <div class="card mt">${td !== null && td >= 0 ? `<p class="small" style="font-weight:700">BIS BRASILIEN</p><div class="count"><b>${td}</b><span class="sub">Tage ✈️</span></div>
+  <div class="card mt">${td !== null && td >= 0 ? `<p class="small" style="font-weight:700">BIS BRASILIEN</p><div class="count"><b>${td}</b><span class="sub">Tage ✈️</span></div>${flight(td)}
      <p class="small">Abflug ${new Date(S.trip + 'T12:00:00').toLocaleDateString('de-DE', { day: 'numeric', month: 'long', year: 'numeric' })} · bei ${S.set.newPerDay} neuen Sätzen pro Tag kennt ihr bis dahin ${Math.min(CARDS.length, learnedCards().length + td * S.set.newPerDay)} von ${CARDS.length} Sätzen.</p>`
     : `<h3>Wann geht’s los?</h3><p class="small" style="margin-bottom:10px">Trag euer Abflugdatum ein – dann zählt die App runter und passt den Plan an.</p>`}
     <label class="field mt" style="margin-bottom:0"><span>Abflug</span><input type="date" value="${esc(S.trip)}" onchange="S.trip=this.value;save();render()"></label></div>
