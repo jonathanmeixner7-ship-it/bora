@@ -142,10 +142,10 @@ function flag(w, n = 22) {
 function splash() {
   if (sessionStorage.getItem('bora.splash')) return;
   try { sessionStorage.setItem('bora.splash', '1'); } catch (e) {}
-  document.body.insertAdjacentHTML('beforeend', `<div id="splash"><div class="sp-flag">${flag(230, 26)}</div>
-    <div class="sp-title">Bora!</div><div class="sp-sub">Português do Brasil</div></div>`);
-  setTimeout(() => $('#splash').classList.add('out'), 1900);
-  setTimeout(() => $('#splash') && $('#splash').remove(), 2500);
+  document.body.insertAdjacentHTML('beforeend', `<div id="splash" class="m-${skyMode()}" style="background:${SKY[skyMode()].sky[0]}">${rioScene(skyMode(), false, 'xMaxYMax slice')}<div class="sp-center"><div class="sp-flag">${flag(150, 22)}</div>
+    <div class="sp-title">Bora!</div><div class="sp-sub">Português do Brasil</div></div></div>`);
+  setTimeout(() => $('#splash').classList.add('out'), 2600);
+  setTimeout(() => $('#splash') && $('#splash').remove(), 3200);
 }
 
 // ---------- Kleinkram ----------
@@ -284,8 +284,8 @@ function home() {
     <div class="chips"><span class="chip sun">🔥 ${streak}</span>${td !== null && td >= 0 ? `<span class="chip">✈️ ${td}</span>` : ''}</div></div>
   ${isIOS && !standalone ? `<div class="hint mt">📲 <b>Tipp:</b> Tippe unten in Safari auf <b>Teilen</b> → <b>„Zum Home-Bildschirm“</b>. Dann öffnet sich Bora! wie eine echte App.</div>` : ''}
   ${oc.length ? `<button class="card tight" style="width:100%;text-align:left;background:var(--seaSoft)" onclick="playChallenge('${oc[0].id}')"><div class="row"><div style="font-size:30px">🏆</div><div class="grow"><h3>${esc(pName())} fordert dich heraus!</h3><p class="small">${oc[0].cards.length} Fragen · ${esc(pName())} hat ${oc[0].score}/${oc[0].total} – schaffst du mehr?</p></div><span class="chev">›</span></div></button>` : ''}
-  <div class="hero">
-    ${beach()}
+  <div class="hero rio m-${skyMode()}">
+    ${rioScene()}
     <svg class="wave" viewBox="0 0 400 46" preserveAspectRatio="none"><path d="M0 20 Q50 0 100 20 T200 20 T300 20 T400 20 V46 H0z" fill="#fff"/></svg>
     <div class="lbl">${done ? 'Heute' : 'Deine Einheit heute'}</div>
     ${done ? `<div class="big">Geschafft! 🎉</div><div class="meta">Deine Serie ist gesichert. Lust auf mehr?</div>
@@ -814,6 +814,67 @@ function beach() {
     <path class="w1" d="M0 18 Q100 4 200 18 T400 18 T600 18 T800 18 T1000 18 T1200 18 T1400 18 T1600 18 V40 H0Z"/>
     <path class="w2" d="M0 26 Q100 14 200 26 T400 26 T600 26 T800 26 T1000 26 T1200 26 T1400 26 T1600 26 V40 H0Z"/></svg>`;
 }
+// Rio-Panorama: Corcovado mit Cristo, Zuckerhut mit Seilbahn, Meer, Palme – Himmel je nach Tageszeit
+const SKY = {
+  dawn: { sky: ['#2B3A7A', '#E77B7B', '#FFC48A'], sea: ['#5A5A9A', '#22305E'], far: '#7A6699', near: '#3F3163', palm: '#1A1433', sun: [128, 168, 30, '#FFD27A'], glow: 'rgba(255,190,120,.55)' },
+  day:  { sky: ['#1A64B8', '#5AAAE6', '#C4E8F8'], sea: ['#2A86C0', '#0C4B7C'], far: '#6E9DBC', near: '#2D6A57', palm: '#0B3B27', sun: [318, 54, 22, '#FFF4C2'], glow: 'rgba(255,245,200,.6)' },
+  dusk: { sky: ['#2A1B4F', '#C2456A', '#F7A64A'], sea: ['#6A3A66', '#1B1838'], far: '#86426B', near: '#3B1E40', palm: '#170B1F', sun: [176, 160, 34, '#FFB347'], glow: 'rgba(255,170,80,.6)' },
+  night:{ sky: ['#040A1C', '#0D1C42', '#1E3870'], sea: ['#0C1C40', '#040A1C'], far: '#1C2B52', near: '#0D1734', palm: '#03060F', sun: [312, 52, 14, '#F4EED8'], glow: 'rgba(240,235,210,.35)' }
+};
+const skyMode = () => { const h = new Date().getHours(); return h >= 5 && h < 9 ? 'dawn' : h >= 9 && h < 17 ? 'day' : h >= 17 && h < 20 ? 'dusk' : 'night'; };
+let RIO_ID = 0;
+function rioScene(mode = skyMode(), withFlag = true, par = 'xMidYMax slice') {
+  const k = SKY[mode], id = 'r' + (RIO_ID++), [sx, sy, sr, sc] = k.sun, night = mode === 'night';
+  const stars = night || mode === 'dawn' ? Array.from({ length: night ? 46 : 14 }, (_, i) => { const x = (i * 97) % 400, y = (i * 53) % (night ? 150 : 70), r = i % 5 ? .8 : 1.4; return `<circle cx="${x}" cy="${y}" r="${r}" style="--tw:${(i % 7) * .4}s"/>`; }).join('') : '';
+  const clouds = night ? '' : [[40, 40, 1], [210, 70, .8], [330, 28, .7]].map(([x, y, s], i) => `<g class="cloud" style="--cd:${-i * 9}s" transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="0" rx="34" ry="9"/><ellipse cx="-12" cy="-6" rx="14" ry="9"/><ellipse cx="8" cy="-9" rx="16" ry="11"/></g>`).join('');
+  const refl = Array.from({ length: 8 }, (_, i) => `<rect x="${sx - (sr * .8 - i * 2.4)}" y="${183 + i * 6.5}" width="${(sr * .8 - i * 2.4) * 2}" height="1.8" rx=".9" style="--rd:${i * .25}s"/>`).join('');
+  const lights = night || mode === 'dusk' ? Array.from({ length: 34 }, (_, i) => `<circle cx="${96 + i * 6.3 + (i % 3)}" cy="${175 - (i % 4) * 1.6}" r="${i % 4 ? .9 : 1.3}" style="--tw:${(i % 6) * .5}s"/>`).join('') : '';
+  const leaves = [[-172, 1.45], [-140, 1.35], [-104, 1.15], [-62, 1.25], [-24, 1.45], [10, 1.3], [-200, 1.2]].map(([a, sc2]) => `<path d="${LEAF}" transform="rotate(${a}) scale(${sc2})"/>`).join('');
+  return `<div class="rio-wrap" aria-hidden="true"><svg class="rio-svg" viewBox="0 0 400 260" preserveAspectRatio="${par}">
+    <defs><linearGradient id="${id}s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${k.sky[0]}"/><stop offset=".62" stop-color="${k.sky[1]}"/><stop offset="1" stop-color="${k.sky[2]}"/></linearGradient>
+      <linearGradient id="${id}w" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${k.sea[0]}"/><stop offset="1" stop-color="${k.sea[1]}"/></linearGradient>
+      <filter id="${id}b" x="-20%" y="-50%" width="140%" height="200%"><feGaussianBlur stdDeviation="1.3"/></filter><radialGradient id="${id}g"><stop offset="0" stop-color="${k.glow}"/><stop offset="1" stop-color="rgba(0,0,0,0)"/></radialGradient></defs>
+    <rect width="400" height="180" fill="url(#${id}s)"/>
+    <g class="stars" fill="#fff">${stars}</g>
+    <g class="sun"><circle cx="${sx}" cy="${sy}" r="${sr * 3.2}" fill="url(#${id}g)" class="halo"/><circle cx="${sx}" cy="${sy}" r="${sr}" fill="${sc}"/>${night ? `<circle cx="${sx + 4}" cy="${sy - 3}" r="3" fill="#D9D2B8"/><circle cx="${sx - 5}" cy="${sy + 4}" r="2" fill="#D9D2B8"/>` : ''}</g>
+    <g class="clouds" fill="#fff" opacity="${mode === 'day' ? .85 : .35}">${clouds}</g>
+    <g class="birds" fill="none" stroke="${night ? '#9FB0D8' : '#1B1430'}" stroke-width="1.4" stroke-linecap="round"><path class="bird" d="M0 0 q4 -4 8 0 q4 -4 8 0"/><path class="bird b2" d="M0 0 q3 -3 6 0 q3 -3 6 0" transform="translate(18 10)"/></g>
+    <g class="l-far" fill="${k.far}"><path d="M-10 180 L-10 150 C18 140 40 110 58 96 C63 92 69 92 73 98 C86 118 104 152 136 180Z"/>
+      <rect x="64.6" y="78" width="2" height="16" rx="1"/><rect x="59.5" y="82.4" width="12.2" height="1.8" rx=".9"/></g>
+    <g class="l-near" fill="${k.near}"><path d="M146 180 C158 160 174 151 190 154 C202 157 208 168 214 180Z"/>
+      <path d="M198 180 C208 150 216 126 234 116 C250 108 264 120 270 138 C276 156 284 170 298 180Z"/></g>
+    <path d="M190 154 L236 117" stroke="${k.near}" stroke-width=".6" opacity=".8"/>
+    <g class="cable"><rect x="-3" y="-2" width="6" height="4" rx="1" fill="${night ? '#FFD97A' : '#E2603F'}"/></g>
+    <g class="lights" fill="#FFD97A">${lights}</g>
+    <rect y="178" width="400" height="82" fill="url(#${id}w)"/>
+    <g class="refl" fill="${sc}" opacity=".7" filter="url(#${id}b)">${refl}</g>
+    <g class="boat" fill="${k.palm}"><path d="M0 0 L16 0 L13 4 L3 4Z"/><path d="M8 -1 L8 -16 L15 -2Z" fill="${night ? '#C9D2F0' : '#FFF6E8'}"/></g>
+    <g class="l-palm" fill="${k.palm}"><g class="trunk"><path d="M368 262 C370 214 358 166 334 128" fill="none" stroke="${k.palm}" stroke-width="9" stroke-linecap="round"/>
+      <g class="crown"><g transform="translate(334 128)">${leaves}</g><circle cx="330" cy="134" r="5"/><circle cx="339" cy="135" r="4.5"/></g></g></g>
+    </svg>${withFlag ? `<div class="rio-flag"><i class="pole"></i>${flag(42, 10)}</div>` : ''}<div class="rio-scrim"></div></div>`;
+}
+// Feuerwerk in Flaggenfarben
+function fireworks(n = 4) {
+  const cols = ['#FFDF00', '#00C24A', '#4C8DFF', '#FFFFFF', '#F5B02E', '#E2603F'];
+  for (let b = 0; b < n; b++) setTimeout(() => {
+    const box = document.createElement('div'); box.className = 'fw';
+    box.style.left = 12 + Math.random() * 76 + 'vw'; box.style.top = 10 + Math.random() * 32 + 'vh';
+    const col = cols[b % cols.length], N = 22;
+    box.innerHTML = Array.from({ length: N }, (_, i) => { const a = i / N * Math.PI * 2, d = 60 + Math.random() * 40; return `<i style="--dx:${(Math.cos(a) * d).toFixed(0)}px;--dy:${(Math.sin(a) * d).toFixed(0)}px;background:${i % 3 ? col : '#fff'}"></i>`; }).join('');
+    document.body.appendChild(box); setTimeout(() => box.remove(), 1700);
+  }, b * 380);
+}
+function countUp() {
+  document.querySelectorAll('.xpbig').forEach(el => {
+    const m = el.textContent.match(/(\d+)/); if (!m) return;
+    const to = +m[1], pre = el.textContent.slice(0, m.index), post = el.textContent.slice(m.index + m[1].length), t0 = performance.now();
+    const step = t => { const p = Math.min(1, (t - t0) / 900), v = Math.round(to * (1 - Math.pow(1 - p, 3))); el.textContent = pre + v + post; if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
+  });
+}
+const celebrate = () => setTimeout(() => { fireworks(); countUp(); }, 250);
+addEventListener('scroll', () => document.documentElement.style.setProperty('--py', Math.min(320, scrollY)), { passive: true });
+
 // Caipirinha-Glas: füllt sich mit dem Fortschritt, bei jeder richtigen Antwort fällt eine Limette hinein
 function caip(p) {
   const y = 9 + 28 * (1 - p / 100);
@@ -827,10 +888,11 @@ function caip(p) {
 function limeDrop() { const g = document.querySelector('.caip'); if (!g) return; g.classList.remove('drop'); void g.getBoundingClientRect(); g.classList.add('drop'); }
 // Samba-Tänzerin mit Federkrone – tanzt bei Erfolgen
 function samba() {
+  celebrate();
   const cols = ['#009C3B', '#F5B02E', '#E2603F', '#1D4E89', '#FFDF00', '#E2603F', '#1D4E89', '#F5B02E', '#009C3B'];
   const fe = cols.map((c, i) => `<ellipse cx="0" cy="-30" rx="6.5" ry="30" fill="${c}" transform="rotate(${-80 + i * 20})"/>`).join('');
   return `<svg class="samba" viewBox="0 0 150 175" aria-hidden="true">
-    <circle cx="75" cy="92" r="64" class="sglow"/>
+    <g class="rays">${Array.from({ length: 16 }, (_, i) => `<path d="M75 92 L${(75 + 150 * Math.cos((i * 22.5 - 4) * Math.PI / 180)).toFixed(0)} ${(92 + 150 * Math.sin((i * 22.5 - 4) * Math.PI / 180)).toFixed(0)} L${(75 + 150 * Math.cos((i * 22.5 + 4) * Math.PI / 180)).toFixed(0)} ${(92 + 150 * Math.sin((i * 22.5 + 4) * Math.PI / 180)).toFixed(0)}Z"/>`).join('')}</g><circle cx="75" cy="92" r="64" class="sglow"/>
     <g class="dancer">
       <g class="fan" transform="translate(75 56)">${fe}<circle r="9" fill="#FFDF00"/></g>
       <g class="hips">

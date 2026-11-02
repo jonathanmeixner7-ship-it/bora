@@ -493,3 +493,63 @@ body{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
 @media (prefers-reduced-motion: reduce){
   .bsun,.bpalm *,.bwaves,.bwaves *,.samba *,.flight *,.caip *{animation:none!important}
 }
+
+/* ---------- Rio-Panorama (v14) ---------- */
+.hero.rio{background:#0B3B27;min-height:300px;padding-top:22px;display:flex;flex-direction:column;justify-content:flex-start}
+.hero.rio::before{display:none}
+.hero.rio .btns{margin-top:auto;padding-top:16px}
+.rio-wrap{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden;border-radius:inherit}
+.rio-svg{position:absolute;inset:0;width:100%;height:100%}
+.rio-scrim{position:absolute;inset:0;background:linear-gradient(100deg,rgba(4,10,20,.5) 0%,rgba(4,10,20,.18) 48%,rgba(4,10,20,0) 70%),linear-gradient(0deg,rgba(4,10,20,.45) 0%,rgba(4,10,20,0) 38%)}
+.m-day .rio-scrim{background:linear-gradient(100deg,rgba(8,30,60,.55) 0%,rgba(8,30,60,.2) 50%,rgba(8,30,60,0) 72%),linear-gradient(0deg,rgba(8,30,60,.5) 0%,rgba(8,30,60,0) 40%)}
+.hero.rio .big,.hero.rio .lbl,.hero.rio .meta{max-width:62%;text-shadow:0 1px 12px rgba(0,0,0,.35)}
+.rio-flag{position:absolute;right:16px;top:118px}
+.rio-flag .pole{position:absolute;left:-2px;top:-2px;width:2.5px;height:88px;border-radius:2px;background:linear-gradient(#EFE7D6,#8E866F)}
+.hero.rio .bwaves{display:none}
+
+/* Bewegung im Panorama */
+.rio-svg .stars circle{animation:twinkle 2.8s ease-in-out var(--tw) infinite}
+@keyframes twinkle{50%{opacity:.25}}
+.rio-svg .halo{transform-box:fill-box;transform-origin:center;animation:halo 5s ease-in-out infinite}
+@keyframes halo{50%{transform:scale(1.12);opacity:.8}}
+.rio-svg .cloud{animation:drift 60s linear var(--cd) infinite}
+@keyframes drift{from{translate:-60px 0}to{translate:120px 0}}
+.rio-svg .birds{animation:fly 22s linear infinite}
+@keyframes fly{0%{transform:translate(-40px,70px)}100%{transform:translate(440px,30px)}}
+.rio-svg .bird{transform-box:fill-box;transform-origin:center;animation:flap .5s ease-in-out infinite alternate}
+.rio-svg .b2{animation-delay:.2s}
+@keyframes flap{to{transform:scaleY(-.6)}}
+.rio-svg .b2{transform:translate(18px,10px)}
+.rio-svg .cable{animation:cable 9s ease-in-out infinite alternate}
+@keyframes cable{from{transform:translate(190px,154.5px)}to{transform:translate(236px,117.5px)}}
+.rio-svg .refl rect{transform-box:fill-box;transform-origin:center;animation:shimmerW 2.4s ease-in-out var(--rd) infinite alternate}
+@keyframes shimmerW{to{transform:scaleX(.55);opacity:.45}}
+.rio-svg .lights circle{animation:twinkle 3.2s ease-in-out var(--tw) infinite}
+.rio-svg .boat{animation:sail 40s ease-in-out infinite alternate}
+@keyframes sail{from{transform:translate(70px,200px)}to{transform:translate(230px,203px)}}
+.rio-svg .trunk{transform-origin:368px 262px;animation:palmSway 5s ease-in-out infinite}
+.rio-svg .crown{transform-origin:334px 128px;animation:crownSway 3.2s ease-in-out infinite}
+.rio-svg .l-far{transform:translateY(calc(var(--py,0) * .06px))}
+.rio-svg .l-near{transform:translateY(calc(var(--py,0) * .03px))}
+.m-dawn .rio-svg .sun,.m-dusk .rio-svg .sun{animation:sunset 12s ease-in-out infinite alternate}
+@keyframes sunset{to{transform:translateY(6px)}}
+
+/* Kino-Startbildschirm */
+#splash{background:#06121F}
+#splash .rio-wrap{border-radius:0;top:auto;height:56%}
+#splash .rio-svg{animation:spZoom 3.2s ease-out both}
+@keyframes spZoom{from{transform:scale(1.18)}to{transform:scale(1)}}
+#splash .sun{animation:spRise 2.4s cubic-bezier(.2,.8,.2,1) both}
+@keyframes spRise{from{transform:translateY(60px);opacity:0}to{transform:none;opacity:1}}
+#splash .sp-center{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:-34vh}
+#splash .sp-title{text-shadow:0 6px 30px rgba(0,0,0,.45)}
+#splash .rio-scrim{background:radial-gradient(70% 45% at 50% 40%,rgba(0,0,0,.35),rgba(0,0,0,0) 70%)}
+
+/* Feuerwerk + Lichtstrahlen */
+.fw{position:fixed;width:0;height:0;z-index:60;pointer-events:none}
+.fw i{position:absolute;width:6px;height:6px;border-radius:50%;left:-3px;top:-3px;box-shadow:0 0 8px currentColor;animation:burst 1.3s cubic-bezier(.1,.7,.3,1) forwards}
+@keyframes burst{0%{transform:translate(0,0) scale(1);opacity:1}70%{opacity:1}100%{transform:translate(var(--dx),calc(var(--dy) + 40px)) scale(.3);opacity:0}}
+.samba .rays{fill:color-mix(in srgb,var(--sun) 28%,transparent);transform-origin:75px 92px;animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media (prefers-reduced-motion: reduce){.rio-svg *,#splash *,.samba .rays{animation:none!important}}

@@ -40,7 +40,7 @@
   <button onclick="print()">🖨️ Drucken / als PDF sichern</button>
 </header>
 <div class="grid" id="g"></div>
-<script src="data.js?v=13"></script>
+<script src="data.js?v=14"></script>
 <script>
   const e = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   document.getElementById('g').innerHTML = LABELS.map(l => `<div class="z"><div class="room">${e(l.room)}</div>
