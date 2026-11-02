@@ -313,3 +313,118 @@ p{margin:0}
 .swb.spk{width:54px;height:54px;color:var(--sea)}
 .swb.spk svg{width:24px;height:24px}
 .swb:active{transform:scale(.92)}
+
+/* =========================================================
+   Design 2.0 · „Tropical Modernism“
+   Ruhig und hochwertig wie tenless (viel Luft, große elegante Titel,
+   gesperrte Labels), dazu Brasilien: Sand, Mata-Grün, Mango, Atlantik
+   und das Wellenmuster vom Copacabana-Gehweg.
+   ========================================================= */
+:root{
+  --bg:#F6EFE3; --card:#FFFCF6; --card2:#EFE6D6; --ink:#10241C; --ink2:#6E6C5F; --line:#E7DCC8;
+  --green:#0F7B46; --green2:#0A5A33; --greenSoft:#E1EFDF;
+  --sun:#F5B02E; --sunSoft:#FCEBC5; --sea:#1D4E89; --seaSoft:#DDE6F1;
+  --red:#D9553B; --redSoft:#F8E0D8; --coral:#E2603F;
+  --mata:#0B3B27; --mata2:#062619;
+  --shadow:0 1px 1px rgba(16,36,28,.04),0 10px 30px -12px rgba(16,36,28,.18);
+  --r:22px;
+  --display:"Fraunces",ui-serif,Georgia,serif;
+  --waves:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='48' viewBox='0 0 120 48'%3E%3Cpath d='M0 12 Q15 -2 30 12 T60 12 T90 12 T120 12 M0 36 Q15 22 30 36 T60 36 T90 36 T120 36' fill='none' stroke='%23fff' stroke-opacity='0.07' stroke-width='7'/%3E%3C/svg%3E");
+  font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0A1510; --card:#122019; --card2:#1A2B22; --ink:#F4EDE0; --ink2:#A5A796; --line:#22362B;
+    --green:#3CC57A; --green2:#249259; --greenSoft:#15352A;
+    --sun:#FFC24A; --sunSoft:#3A2F14; --sea:#7FA9E8; --seaSoft:#16263D;
+    --red:#FF7A5C; --redSoft:#3B1D17;
+    --shadow:0 1px 1px rgba(0,0,0,.3),0 12px 30px -12px rgba(0,0,0,.5);
+  }
+}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(60% 40% at 100% 0%,color-mix(in srgb,var(--sun) 18%,transparent),transparent 70%),
+             radial-gradient(50% 35% at 0% 100%,color-mix(in srgb,var(--green) 10%,transparent),transparent 70%)}
+
+/* Typografie */
+h1{font-family:var(--display);font-weight:500;font-size:34px;letter-spacing:-.015em;line-height:1.08;font-variation-settings:"opsz" 144}
+h1 em,.greet em{font-style:italic;font-weight:400;color:var(--green)}
+h2{font-family:var(--display);font-weight:500;font-size:23px;letter-spacing:-.01em;margin:30px 0 12px}
+h3{font-weight:700;letter-spacing:-.005em}
+.sub{line-height:1.45}
+.kind,.hero .lbl,.small[style*="font-weight:700"]{letter-spacing:.12em}
+.top{padding-top:4px}
+.top .sub{text-transform:uppercase;font-size:11px;font-weight:700;letter-spacing:.14em}
+
+/* Karten */
+.card,.list,.stat,.pcard,.unit,.newcard,.quizcard,.endstats div{border:1px solid var(--line);box-shadow:var(--shadow)}
+.card{border-radius:var(--r)}
+.list{border-radius:var(--r)}
+.chip{border:1px solid var(--line);box-shadow:none;background:var(--card)}
+.chip.sun{background:var(--sunSoft);border-color:transparent}
+
+/* Startkasten: Mata-Grün, Mango-Sonne, Copacabana-Wellen */
+.hero,.casa-hero{background:
+    radial-gradient(42% 55% at 92% 8%,rgba(245,176,46,.55),rgba(245,176,46,0) 70%),
+    linear-gradient(165deg,#13603D 0%,var(--mata) 55%,var(--mata2) 100%);
+  box-shadow:0 22px 44px -18px rgba(6,38,25,.55);border-radius:28px;padding:24px 20px 20px}
+.hero::before{content:"";position:absolute;inset:0;background:var(--waves) 0 0/120px 48px;pointer-events:none}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:5px;background:linear-gradient(90deg,#009C3B 0 55%,#FFDF00 55% 78%,#1D4E89 78%)}
+.hero .wave{display:none}
+.hero>*{position:relative}
+.hero-flag{position:absolute}
+.hero .lbl{font-size:11px;opacity:.7}
+.hero .big{font-family:var(--display);font-weight:500;font-size:30px;line-height:1.1;letter-spacing:-.01em;margin:8px 0 6px}
+.casa-hero .big{font-size:28px}
+.hero .meta{opacity:.75;font-size:14px}
+.btn{border-radius:16px;font-weight:750;letter-spacing:-.005em}
+.btn.white{color:var(--mata);box-shadow:0 4px 0 rgba(0,0,0,.25)}
+.hero .btns .btn.ghost{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18)}
+.btn.sun{color:#3A2600;box-shadow:0 4px 0 #C98A12}
+.btn.sea{box-shadow:0 4px 0 #123665}
+
+/* Themen-Kacheln mit Farbe des Themas */
+.unit{background:linear-gradient(180deg,color-mix(in srgb,var(--uc) 13%,var(--card)) 0%,var(--card) 70%)}
+.unit .em{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;font-size:26px;background:color-mix(in srgb,var(--uc) 18%,var(--card))}
+.unit h3{font-size:16px}
+
+/* Zahlen */
+.stat b,.count b,.teamflame .n,.pcard .fl,.end .xpbig,.zring b{font-family:var(--display);font-weight:600;letter-spacing:-.02em}
+.end h1{margin-top:6px}
+.end .xpbig{color:var(--sun)}
+
+/* Satz des Tages wie eine Postkarte */
+.pod{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--sunSoft),var(--card) 65%)}
+.pod .pt{font-family:var(--display);font-weight:500;font-size:26px;font-style:italic}
+
+/* Tab-Leiste: schwebende Pille */
+#tabs{left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));padding:6px;border-radius:24px;border:1px solid rgba(255,255,255,.08);
+  max-width:520px;margin:0 auto;background:color-mix(in srgb,var(--mata2) 88%,transparent);box-shadow:0 18px 40px -14px rgba(6,38,25,.6)}
+#tabs button{color:rgba(244,237,224,.55);border-radius:18px;padding:8px 0 6px;position:relative}
+#tabs button.on{color:#fff;background:rgba(255,255,255,.08)}
+#tabs button.on::after{content:"";position:absolute;bottom:3px;width:5px;height:5px;border-radius:50%;background:var(--sun)}
+#tabs button.on span{color:var(--sun)}
+body{padding-bottom:calc(104px + env(safe-area-inset-bottom))}
+#toast{bottom:calc(110px + env(safe-area-inset-bottom));border-radius:16px}
+
+/* Lernen-Fenster */
+#overlay{background:var(--bg)}
+.prog{height:10px}
+.prog i{background:linear-gradient(90deg,var(--green),#2BB36B);box-shadow:none}
+.prompt,.newcard .pt,.quizcard .de,.turn .tde,.sw-pt,.sw-de{font-family:var(--display);font-weight:500;letter-spacing:-.01em}
+.newcard .pt{font-size:32px}
+.opt{border-width:1.5px;box-shadow:0 2px 0 var(--line)}
+.bubble.me{background:var(--green)}
+.seg{background:var(--card2);border-radius:14px}
+.seg button.on{box-shadow:0 2px 8px -2px rgba(16,36,28,.2)}
+
+/* Swipe-Karten: Wellen im Hintergrund */
+.sw-face:not(.back){background:radial-gradient(120% 70% at 100% 0%,rgba(255,255,255,.22),transparent 60%),var(--waves) 0 0/120px 48px,linear-gradient(160deg,var(--uc),color-mix(in srgb,var(--uc) 50%,#04140d))}
+.sw-face:not(.back)::before{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(160deg,transparent,rgba(0,0,0,.15))}
+.sw-face>*{position:relative}
+.sw-pt{font-size:36px}
+
+/* Start-Animation */
+#splash{background:radial-gradient(60% 40% at 80% 18%,rgba(245,176,46,.45),rgba(245,176,46,0) 70%),var(--waves) 0 0/120px 48px,linear-gradient(170deg,#13603D 0%,#0B3B27 60%,#062619 100%)}
+#splash .sp-title{font-family:var(--display);font-style:italic;font-weight:500;font-size:68px}
+#splash .sp-sub{font-size:12px;letter-spacing:.3em}
+.onb h1{font-size:42px}

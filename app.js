@@ -280,7 +280,7 @@ function home() {
   }
   return `
   <div class="top"><div><p class="sub">${new Date().toLocaleDateString('de-DE', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-    <h1>${greet()}, ${esc(S.me.name)}!</h1></div>
+    <h1 class="greet"><em>${greet()},</em> ${esc(S.me.name)}!</h1></div>
     <div class="chips"><span class="chip sun">🔥 ${streak}</span>${td !== null && td >= 0 ? `<span class="chip">✈️ ${td}</span>` : ''}</div></div>
   ${isIOS && !standalone ? `<div class="hint mt">📲 <b>Tipp:</b> Tippe unten in Safari auf <b>Teilen</b> → <b>„Zum Home-Bildschirm“</b>. Dann öffnet sich Bora! wie eine echte App.</div>` : ''}
   ${oc.length ? `<button class="card tight" style="width:100%;text-align:left;background:var(--seaSoft)" onclick="playChallenge('${oc[0].id}')"><div class="row"><div style="font-size:30px">🏆</div><div class="grow"><h3>${esc(pName())} fordert dich heraus!</h3><p class="small">${oc[0].cards.length} Fragen · ${esc(pName())} hat ${oc[0].score}/${oc[0].total} – schaffst du mehr?</p></div><span class="chev">›</span></div></button>` : ''}
@@ -335,7 +335,7 @@ function learn() {
   return `<h1>Themen</h1><p class="sub">${CARDS.length} Sätze für zwei Monate Brasilien – sortiert nach Nützlichkeit.</p>${seg}
   <div class="units">${UNITS.map(u => {
     const p = unitProg(u.id);
-    return `<button class="unit" onclick="UI.unit='${u.id}';render();scrollTo(0,0)">
+    return `<button class="unit" style="--uc:${u.c}" onclick="UI.unit='${u.id}';render();scrollTo(0,0)">
       ${S.focus === u.id ? '<span class="badge">Fokus</span>' : p.m === p.n ? '<span class="badge">⭐</span>' : ''}
       <div class="em">${u.e}</div><h3>${esc(u.t)}</h3><p class="small">${p.l}/${p.n} gelernt</p>
       <div class="bar"><i style="width:${p.pct}%;background:${u.c}"></i></div></button>`;
