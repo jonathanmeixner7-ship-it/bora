@@ -81,7 +81,10 @@ const hasSynth = 'speechSynthesis' in window;
 const hasTTS = true;
 const AUD = new Audio();
 AUD.preload = 'auto';
-try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {}
+// „playback“ = Ton auch im Lautlos-Modus. Zum Aufnehmen muss kurz auf „play-and-record“ umgestellt werden,
+// sonst blockiert iOS das Mikrofon, obwohl es freigegeben ist.
+const audioMode = m => { try { if (navigator.audioSession) navigator.audioSession.type = m; } catch (e) {} };
+audioMode('playback');
 function pickVoice() {
   const v = speechSynthesis.getVoices();
   VOICE = v.find(x => /pt[-_]BR/i.test(x.lang) && /Felipe/i.test(x.name)) || v.find(x => x.lang === 'pt-BR' && /Luciana|Google/i.test(x.name)) || v.find(x => /pt[-_]BR/i.test(x.lang)) || v.find(x => /^pt/i.test(x.lang)) || null;
@@ -878,12 +881,13 @@ window.mirrorRec = async () => {
   if (!MR) return;
   if (MR.rec) { MR.rec.stop(); return; }
   try {
-    stopSay();
-    const st = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
-    const rec = new MediaRecorder(st), ch = [];
+    stopSay(); audioMode('play-and-record');
+    const st = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mt = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm'].find(t => MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t));
+    const rec = mt ? new MediaRecorder(st, { mimeType: mt }) : new MediaRecorder(st), ch = [];
     rec.ondataavailable = e => e.data.size && ch.push(e.data);
     rec.onstop = async () => {
-      st.getTracks().forEach(x => x.stop()); MR.rec = null; $('#recbtn').classList.remove('on');
+      st.getTracks().forEach(x => x.stop()); audioMode('playback'); if (!MR) return; MR.rec = null; $('#recbtn').classList.remove('on');
       const blob = new Blob(ch, { type: rec.mimeType || 'audio/mp4' }); if (MR.url) URL.revokeObjectURL(MR.url); MR.url = URL.createObjectURL(blob); $('#mymine').disabled = false;
       $('#mirhint').textContent = 'Analysiere deine Melodie …';
       try { MR.me = await pitchOf(await blob.arrayBuffer()); drawCurves($('#mircv'), MR.ref, MR.me); const sc = MR.ref ? similarity(MR.ref, MR.me) : null;
@@ -893,9 +897,15 @@ window.mirrorRec = async () => {
       } catch (e) { $('#mirhint').textContent = 'Aufnahme gespeichert – hör sie dir mit ▶ an.'; }
       mirrorMine();
     };
-    rec.start(); MR.rec = rec; $('#recbtn').classList.add('on'); $('#mirhint').textContent = 'Aufnahme läuft … sprich den Satz und tippe dann nochmal.';
+    rec.start(250); MR.rec = rec; $('#recbtn').classList.add('on'); $('#mirhint').textContent = 'Aufnahme läuft … sprich den Satz und tippe dann nochmal.';
     setTimeout(() => MR && MR.rec === rec && rec.stop(), 9000);
-  } catch (e) { $('#mirhint').textContent = 'Kein Mikrofon-Zugriff. iPhone: Einstellungen → Safari → Mikrofon → Erlauben.'; }
+  } catch (e) {
+    audioMode('playback');
+    const n = e && e.name;
+    $('#mirhint').innerHTML = n === 'NotAllowedError' ? 'Mikrofon blockiert. iPhone: <b>Einstellungen → Apps → Safari → Mikrofon → „Fragen“</b>. Dann Bora! ganz schließen, neu öffnen und beim Antippen „Erlauben“ wählen.'
+      : n === 'NotFoundError' ? 'Kein Mikrofon gefunden – ist vielleicht ein Kopfhörer ohne Mikro verbunden?'
+      : 'Aufnahme hat nicht geklappt (' + esc(n || 'unbekannt') + '). Bitte Bora! schließen und neu öffnen.';
+  }
 };
 window.mirrorMine = () => { if (MR && MR.url) { stopSay(); AUD.src = MR.url; AUD.defaultPlaybackRate = AUD.playbackRate = 1; AUD.play().catch(() => {}); } };
 window.mirrorClose = () => { if (MR && MR.rec) MR.rec.stop(); MR = null; const m = $('#mirror'); m && m.remove(); };
