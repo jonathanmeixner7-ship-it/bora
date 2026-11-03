@@ -424,6 +424,48 @@ const SCENES = [
   {them:'Tem sim, fator 30 ou 50?', de:'Ja, Faktor 30 oder 50?', opts:['Cinquenta, por favor. E tenho uma queimadura de sol','Dois meses','À esquerda'], ok:0},
   {them:'Para queimadura, esse gel é ótimo.', de:'Für Sonnenbrand ist dieses Gel super.', opts:['Vou levar esse. Quanto é?','Que sorriso lindo!','O aeroporto'], ok:0},
   {them:'Dá oitenta reais.', de:'Das macht achtzig Real.', opts:['Aceita cartão?','Pra qual time você torce?','Sei lá'], ok:0}
+]},
+{ id:'s7', t:'Airbnb-Check-in', e:'🏠', unit:'u9', who:'Marcelo', steps:[
+  {them:'E aí, Jonathan? Beleza? Sou o Marcelo, o anfitrião!', de:'Na, Jonathan? Alles gut? Ich bin Marcelo, der Gastgeber!', opts:['Beleza! Prazer, Marcelo!','Uma caipirinha, por favor','Tô passando mal'], ok:0},
+  {them:'Fizeram boa viagem?', de:'Hattet ihr eine gute Reise?', opts:['Fizemos sim, mas tô morto de cansado','Quanto custa o ônibus?','Não, obrigado'], ok:0},
+  {them:'A senha do Wi-Fi tá aqui na geladeira, tá?', de:'Das WLAN-Passwort hängt hier am Kühlschrank, okay?', opts:['Show! E o ar-condicionado, como liga?','Eu torço pro Flamengo','Tem desconto?'], ok:0},
+  {them:'É só apertar esse botão aqui. Qualquer coisa, me chama no zap!', de:'Einfach den Knopf hier drücken. Wenn was ist, schreib mir auf WhatsApp!', opts:['Valeu! Tem algum lugar bom pra comer aqui perto?','Me deixa aqui, por favor','Fui roubado'], ok:0},
+  {them:'Tem um boteco massa na esquina, o Bar do Zé. Vai lá!', de:'An der Ecke gibt’s eine coole Kneipe, die Bar do Zé. Geht da hin!', opts:['Demorou! Brigado, Marcelo!','Não entendo nada','Eu sou alérgico'], ok:0}
+]},
+{ id:'s8', t:'Strandverkäufer', e:'⛱️', unit:'u6', who:'Seu Zé', steps:[
+  {them:'Olha o mate! Olha o biscoito Globo! Vai querer, meu amigo?', de:'Mate! Globo-Kekse! Willst du was, mein Freund?', opts:['Quanto é o mate?','Eu moro em Munique','Vamos dançar?'], ok:0},
+  {them:'O mate é oito, o biscoito é cinco. Os dois por doze.', de:'Mate kostet acht, der Keks fünf. Beides zusammen zwölf.', opts:['Fechado, me vê os dois!','Sempre reto','Que perfume bom!'], ok:0},
+  {them:'Quer alugar cadeira e guarda-sol também?', de:'Willst du auch Stühle und Sonnenschirm mieten?', opts:['Quanto fica pra dois?','Tô com saudade','A conta, por favor, garçom'], ok:0},
+  {them:'Duas cadeiras e o guarda-sol, faço por trinta conto.', de:'Zwei Stühle und Schirm – mach ich dir für dreißig.', opts:['Faz por vinte e cinco?','Onde fica o hospital?','Eu sou personal trainer'], ok:0},
+  {them:'Tá bom, vinte e cinco, só porque cê é gente boa!', de:'Na gut, fünfundzwanzig – nur weil du ein feiner Kerl bist!', opts:['Valeu, mestre! Aceita Pix?','Socorro!','Boa noite, quantas pessoas?'], ok:0}
+]},
+{ id:'s9', t:'Fußball in der Bar', e:'⚽', unit:'u12', who:'Rafa', steps:[
+  {them:'Aí, gringo! Cê torce pra quem?', de:'Hey, Gringo! Für wen bist du?', opts:['Hoje eu torço pro Flamengo!','Duas cadeiras, por favor','Tô perdido'], ok:0},
+  {them:'Boa! Mengão! Senta aí com a gente!', de:'Super! Mengão! Setz dich zu uns!', opts:['Valeu! Desce mais uma breja?','Não gosto de futebol, tchau','Qual é a senha?'], ok:0},
+  {them:'Nossa, que frango do goleiro! Cê viu isso?', de:'Boah, was für ein Patzer vom Torwart! Hast du das gesehen?', opts:['Vi! Que vergonha!','Eu quero um pastel de queijo','Onde é o banheiro?'], ok:0},
+  {them:'GOOOL! É do Mengão!', de:'TOOOR! Für Flamengo!', opts:['Que golaço! Partiu comemorar!','Desculpa, não entendi','Me deixa aqui'], ok:0},
+  {them:'Cê é gente boa, gringo. Bora no próximo jogo também?', de:'Du bist cool, Gringo. Kommst du nächstes Spiel auch mit?', opts:['Tô dentro! Me passa teu zap','Tem outro tamanho?','Faz por quarenta?'], ok:0}
+]},
+{ id:'s10', t:'Beim Arzt', e:'🩺', unit:'u10', who:'Dra. Paula', fem:1, steps:[
+  {them:'Boa tarde! O que você tá sentindo?', de:'Guten Tag! Was für Beschwerden haben Sie?', opts:['Tô com dor de barriga e febre','Quero aprender a surfar','Que lugar massa!'], ok:0},
+  {them:'Desde quando?', de:'Seit wann?', opts:['Desde ontem à noite','Dois meses no Brasil','Dez reais'], ok:0},
+  {them:'Comeu alguma coisa diferente?', de:'Haben Sie etwas Ungewohntes gegessen?', opts:['Comi um espetinho na praia','Eu sou da Alemanha','Bora malhar!'], ok:0},
+  {them:'Deve ser uma intoxicação leve. Vou passar um remédio.', de:'Wohl eine leichte Lebensmittelvergiftung. Ich verschreibe Ihnen etwas.', opts:['Tá bom. Preciso tomar quantas vezes por dia?','Mais uma, por favor!','Vamos tirar uma foto?'], ok:0},
+  {them:'Três vezes por dia, e bebe muita água, tá?', de:'Dreimal am Tag – und viel Wasser trinken, okay?', opts:['Pode deixar. Obrigado, doutora!','Me vê uma breja','Tô dentro!'], ok:0}
+]},
+{ id:'s11', t:'Zweites Date', e:'🍦', unit:'u7', who:'Bia', fem:1, steps:[
+  {them:'Oi! Desculpa o atraso, o trânsito tava um caos!', de:'Hi! Sorry für die Verspätung, der Verkehr war ein Chaos!', opts:['Relaxa, acabei de chegar. Cê tá linda!','A conta, por favor','Onde fica a rodoviária?'], ok:0},
+  {them:'Ai, obrigada! Bora tomar um sorvete na orla?', de:'Oh, danke! Holen wir uns ein Eis an der Strandpromenade?', opts:['Bora! Qual é teu sabor favorito?','Eu tenho seguro de viagem','Tô passando mal'], ok:0},
+  {them:'Açaí, óbvio! E aí, tá curtindo o Rio?', de:'Açaí, logisch! Und, gefällt dir Rio?', opts:['Tô amando! Mas o melhor do Rio é você','Eu não gosto de você','Cinquenta reais'], ok:0},
+  {them:'Para, que vergonha! Cê é muito fofo!', de:'Hör auf, wie peinlich! Du bist so süß!', opts:['Sério! Quero te ver de novo antes de ir embora','Pode repetir o preço?','Fica com o troco'], ok:0},
+  {them:'Eu também quero! Sábado tem roda de samba na Lapa. Topa?', de:'Ich auch! Samstag ist Samba-Runde in Lapa. Bist du dabei?', opts:['Topo demais! Tá marcado!','Me deixa aqui','Desculpa, eu tô ocupado'], ok:0}
+]},
+{ id:'s12', t:'Açaí nach dem Training', e:'🫐', unit:'u3', who:'Atendente', fem:1, steps:[
+  {them:'Oi, tudo bom? Vai de quê hoje?', de:'Hi, alles gut? Was darf’s heute sein?', opts:['Um açaí de quinhentos, por favor','Tem aula de surfe?','Dói aqui'], ok:0},
+  {them:'Com o que você quer? Tem granola, banana, leite em pó, paçoca…', de:'Womit möchtest du ihn? Es gibt Granola, Banane, Milchpulver, Paçoca …', opts:['Granola e banana. Tem whey?','Sempre reto','Vou ficar dois meses'], ok:0},
+  {them:'Tem sim! Coloco uma dose?', de:'Ja, klar! Soll ich eine Portion reinmachen?', opts:['Pode colocar! Acabei de treinar perna','Não, obrigado, tchau','Fui roubado'], ok:0},
+  {them:'Tá aqui! Vai comer aqui ou é pra viagem?', de:'Bitte schön! Isst du hier oder nimmst du ihn mit?', opts:['Pra viagem. Aceita cartão?','Me ensina a dançar?','É longe?'], ok:0},
+  {them:'Aceito! É só aproximar. Bom treino!', de:'Klar! Einfach ranhalten. Gutes Training!', opts:['Valeu! Até amanhã!','Tô com sede','Onde fica a praia?'], ok:0}
 ]}
 ];
 
