@@ -93,7 +93,7 @@ function audioKey(t) {
   for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
   return h.toString(16).padStart(8, '0');
 }
-const RATE = { 0.75: 0.85, 0.9: 1, 1: 1.15 };
+const RATE = { 0.75: 0.85, 0.9: 1, 1: 1.15, 1.3: 1.35 };
 function stopSay() { try { AUD.pause(); } catch (e) {} if (hasSynth) speechSynthesis.cancel(); }
 function synth(t, slow) {
   if (!hasSynth) return;
@@ -303,7 +303,7 @@ function home() {
     <div class="mission"><div class="ic">${m[0]}</div><div class="grow"><h3>${esc(m[1])}</h3><p class="small">${esc(m[2])}</p></div>
     <button class="check ${S.mis[mi] ? 'on' : ''}" onclick="toggleMission(${mi})">${S.mis[mi] ? '✓' : ''}</button></div></div>` : ''}
   <div class="card pod"><p class="small" style="font-weight:700;margin-bottom:8px">SATZ DES TAGES</p>
-    <div class="row"><div class="grow"><div class="pt">${esc(P(pod.pt))}</div><p class="small" style="color:var(--green);font-weight:700;margin-top:4px">${esc(pod.pr)}</p><p class="sub" style="margin-top:6px">${esc(pod.de)}</p></div>${sayBtn(pod.id)}</div></div>
+    <div class="row"><div class="grow"><div class="pt">${esc(P(pod.pt))}</div><p class="small" style="color:var(--green);font-weight:700;margin-top:4px">${esc(pod.pr)}</p><p class="sub" style="margin-top:6px">${esc(pod.de)}</p></div>${sayBtn(pod.id)}</div>${canMirror(pod.pt) ? `<button class="mirbtn" onclick="mirror(BYID['${pod.id}'].pt)">🎙 Nachsprechen</button>` : ''}</div>
   <div class="stats">
     <div class="stat"><b>🔥 ${streak}</b><span>Tage Serie</span></div>
     <div class="stat"><b>${learnedCards().length}</b><span>gelernt</span></div>
@@ -327,7 +327,8 @@ function unitProg(u) {
 }
 function learn() {
   if (UI.unit) return unitView(UI.unit);
-  const seg = `<div class="seg"><button class="${UI.seg === 'themen' ? 'on' : ''}" onclick="UI.seg='themen';render()">Themen</button><button class="${UI.seg === 'szenen' ? 'on' : ''}" onclick="UI.seg='szenen';render()">Szenen</button></div>`;
+  const seg = `<div class="seg"><button class="${UI.seg === 'themen' ? 'on' : ''}" onclick="UI.seg='themen';render()">Themen</button><button class="${UI.seg === 'szenen' ? 'on' : ''}" onclick="UI.seg='szenen';render()">Szenen</button><button class="${UI.seg === 'echt' ? 'on' : ''}" onclick="UI.seg='echt';render()">Echt 🇧🇷</button></div>`;
+  if (UI.seg === 'echt') return echtView(seg);
   if (UI.seg === 'szenen') {
     return `<h1>Szenen</h1><p class="sub">Kleine Rollenspiele aus dem echten Brasilien-Alltag. Du wählst die passende Antwort.</p>${seg}
     <div class="list">${SCENES.map(s => `<button class="li" onclick="playScene('${s.id}')"><div style="font-size:30px">${s.e}</div><div class="grow"><div class="pt">${esc(s.t)}</div><div class="de">mit ${esc(s.who)} · ${s.steps.length} Schritte</div></div>${S.scenes[s.id] ? '<span class="pill ok">✓</span>' : '<span class="chev">›</span>'}</button>`).join('')}</div>`;
@@ -353,7 +354,7 @@ function unitView(uid) {
   <p class="small" style="margin:0 4px 14px">Fokus = neue Sätze in deiner Tageseinheit kommen zuerst aus diesem Thema.</p>
   ${sc.length ? `<div class="list">${sc.map(s => `<button class="li" onclick="playScene('${s.id}')"><div style="font-size:26px">${s.e}</div><div class="grow"><div class="pt">Szene: ${esc(s.t)}</div><div class="de">Rollenspiel mit ${esc(s.who)}</div></div><span class="chev">›</span></button>`).join('')}</div>` : ''}
   <div class="list">${u.items.map((_, i) => { const c = BYID[uid + '-' + i]; return `<div class="li">
-    <div class="grow"><div class="pt">${esc(P(c.pt))}</div><div class="de">${esc(c.de)}</div><div class="pr">🗣 ${esc(c.pr)}</div>${c.tip ? `<div class="small" style="margin-top:3px">💡 ${esc(c.tip)}</div>` : ''}</div>
+    <div class="grow"><div class="pt">${esc(P(c.pt))}</div><div class="de">${esc(c.de)}</div><div class="pr">🗣 ${esc(c.pr)}</div>${spokenBox(c.pt, 1)}${c.tip ? `<div class="small" style="margin-top:3px">💡 ${esc(c.tip)}</div>` : ''}</div>
     <div style="display:flex;flex-direction:column;align-items:center;gap:8px">${sayBtn(c.id, 1)}${dots(c.id)}</div></div>`; }).join('')}</div>`;
 }
 window.setFocus = uid => { S.focus = S.focus === uid ? null : uid; save(); toast(S.focus ? `🎯 Neue Sätze kommen jetzt aus „${UNIT[uid].t}“` : 'Fokus entfernt – die App wählt wieder automatisch'); render(); };
@@ -432,8 +433,8 @@ function showTask() {
     frame(`<div class="kind new">✨ Neuer Satz · ${esc(UNIT[c.u].t)}</div>
       <div class="newcard"><div class="pt">${esc(P(c.pt))}</div><div class="pr">🗣 ${esc(c.pr)}</div>
       ${hasTTS ? `<button class="bigsay" onclick="sayId('${c.id}')">${IC.spk}</button><button class="slow" onclick="sayId('${c.id}',1)">🐢 langsam</button>` : ''}
-      <div class="de">${esc(c.de)}</div>${c.tip ? `<div class="tip">💡 ${esc(c.tip)}</div>` : ''}</div>
-      <p class="small center mt">Hör zu und sprich es einmal laut nach.</p>`,
+      <div class="de">${esc(c.de)}</div>${spokenBox(c.pt)}${c.tip ? `<div class="tip">💡 ${esc(c.tip)}</div>` : ''}</div>
+      ${canMirror(c.pt) ? `<button class="mirbtn" onclick="mirror(BYID['${c.id}'].pt)">🎙 Nachsprechen &amp; Melodie vergleichen</button>` : `<p class="small center mt">Hör zu und sprich es einmal laut nach.</p>`}`,
       `<button class="btn" onclick="next()">Verstanden</button>`);
     say(c.pt);
     return;
@@ -712,6 +713,127 @@ function liveEnd() {
   save();
 }
 
+// ---------- So sagt man's wirklich ----------
+function spokenBox(pt, sm) {
+  const x = SPK[pt]; if (!x) return '';
+  return `<div class="spoken ${sm ? 'sm' : ''}" onclick="event.stopPropagation()"><div class="sp-l">💬 So sagt man’s wirklich</div><div class="row" style="gap:8px"><b class="grow">${esc(x.sp)}</b><button class="say sm" onclick="event.stopPropagation();say(${esc(JSON.stringify(x.sp))})">${IC.spk}</button></div>${x.n ? `<div class="sp-n">${esc(x.n)}</div>` : ''}</div>`;
+}
+
+// ---------- Echt Brasil: Original-Ausschnitte aus YouTube ----------
+let YTP = null, YTQ = null, YTR = 1;
+function ytLoad() {
+  if (window.YT && YT.Player) return Promise.resolve();
+  if (!ytLoad.p) ytLoad.p = new Promise(r => { window.onYouTubeIframeAPIReady = r; const sc = document.createElement('script'); sc.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(sc); });
+  return ytLoad.p;
+}
+function ytBox() {
+  let b = $('#ytbox');
+  if (!b) { document.body.insertAdjacentHTML('beforeend', `<div id="ytbox" hidden><div class="ytin"><div id="ytp"></div></div><div class="ytbar"><div class="grow" id="ytcap"></div><button onclick="echtPlay(YTQ,0.7)" title="langsam">🐢</button><button onclick="echtPlay(YTQ)" title="nochmal">🔁</button><button onclick="ytClose()" title="schließen">✕</button></div></div>`); b = $('#ytbox'); }
+  return b;
+}
+window.ytClose = () => { try { YTP && YTP.stopVideo(); } catch (e) {} const b = $('#ytbox'); if (b) b.hidden = true; document.querySelectorAll('.clip.on').forEach(x => x.classList.remove('on')); };
+window.echtPlay = async (i, rate = 1) => {
+  if (i === null || i === undefined) return;
+  const r = REAL[i]; YTQ = i; YTR = rate; stopSay();
+  const b = ytBox(); b.hidden = false;
+  $('#ytcap').innerHTML = `<b>${esc(r.pt)}</b><span>${esc(r.de)}</span>`;
+  document.querySelectorAll('.clip').forEach(x => x.classList.toggle('on', +x.dataset.i === i));
+  await ytLoad();
+  const opts = { videoId: r.v, startSeconds: r.s, endSeconds: r.e };
+  if (!YTP) {
+    YTP = new YT.Player('ytp', { host: 'https://www.youtube-nocookie.com', videoId: r.v,
+      playerVars: { start: Math.floor(r.s), end: Math.ceil(r.e), playsinline: 1, rel: 0, modestbranding: 1, autoplay: 1 },
+      events: { onReady: e => { e.target.setPlaybackRate(YTR); e.target.loadVideoById(opts); }, onStateChange: e => { if (e.data === 1 && e.target.getPlaybackRate() !== YTR) e.target.setPlaybackRate(YTR); } } });
+  } else { YTP.loadVideoById(opts); YTP.setPlaybackRate(rate); }
+  S.echt = S.echt || {}; S.echt[i] = 1; save();
+};
+function echtView(seg) {
+  const by = {}; REAL.forEach((r, i) => (by[r.v] = by[r.v] || []).push(i));
+  const heard = Object.keys(S.echt || {}).length;
+  return `<h1>Echt <em>Brasil</em></h1><p class="sub">Keine Studio-Stimmen: echte Brasilianer auf der Straße. Hör, wie sie wirklich reden – schnell, verschliffen, mit „tô“, „tá“ und „a gente“.</p>${seg}
+  <div class="card echt-hero"><div class="row"><div style="font-size:30px">🎧</div><div class="grow"><b>${heard}/${REAL.length} Ausschnitte gehört</b><p class="small">Tipp: erst Original ▶, dann 🐢 langsam, dann Antonio 🔊 zum Mitlesen – und am Ende selbst nachsprechen 🎙</p></div></div>
+    <button class="btn mt" onclick="startSession('unit','u16')">Diese Sätze als Lernkarten üben</button></div>
+  ${Object.keys(by).map(v => `<h2>${VIDEOS[v].e} ${esc(VIDEOS[v].t)}</h2><div class="list">${by[v].map(i => { const r = REAL[i]; return `<div class="li clip" data-i="${i}">
+    <div class="grow"><div class="pt">„${esc(r.pt)}“</div><div class="de">${esc(r.de)}</div>${r.f ? `<div class="school">📘 Schulbuch: <s>${esc(r.f)}</s></div>` : ''}${r.n ? `<div class="small" style="margin-top:4px">💡 ${esc(r.n)}</div>` : ''}
+      <div class="clipbtns"><button class="cb play" onclick="echtPlay(${i})">▶ Original</button><button class="cb" onclick="echtPlay(${i},0.7)">🐢</button><button class="cb" onclick="say(REAL[${i}].pt)">🔊 Antonio</button>${canMirror(r.pt) ? `<button class="cb" onclick="mirror(REAL[${i}].pt)">🎙</button>` : ''}</div></div>
+    ${S.echt && S.echt[i] ? '<span class="pill ok">✓</span>' : ''}</div>`; }).join('')}</div>`).join('')}
+  <p class="small center" style="margin:18px 8px">Ausschnitte aus Straßeninterviews des YouTube-Kanals „Easy Portuguese“. Das Video läuft direkt von YouTube, wir spielen nur die passende Stelle ab.</p>`;
+}
+
+// ---------- Sprech-Spiegel: aufnehmen, anhören, Satzmelodie vergleichen ----------
+const canMirror = t => !!(navigator.mediaDevices && window.MediaRecorder && typeof AUDIO !== 'undefined' && AUDIO.has(audioKey(t)) && P(t) === t);
+let MR = null;
+async function pitchOf(ab) {
+  const AC = window.AudioContext || window.webkitAudioContext, ctx = new AC();
+  const buf = await new Promise((ok, no) => ctx.decodeAudioData(ab, ok, no)); ctx.close && ctx.close();
+  const raw = buf.getChannelData(0), k = Math.max(1, Math.round(buf.sampleRate / 16000)), sr = buf.sampleRate / k;
+  const x = new Float32Array(Math.floor(raw.length / k)); for (let i = 0; i < x.length; i++) x[i] = raw[i * k];
+  const N = Math.round(sr * .04), hop = Math.round(sr * .01), lo = Math.floor(sr / 380), hi = Math.ceil(sr / 70), out = [];
+  let peak = 0; for (let i = 0; i < x.length; i++) peak = Math.max(peak, Math.abs(x[i]));
+  for (let p = 0; p + N + hi < x.length; p += hop) {
+    let e = 0; for (let i = 0; i < N; i++) e += x[p + i] * x[p + i];
+    if (Math.sqrt(e / N) < peak * .06) { out.push(null); continue; }
+    let best = 0, bl = 0;
+    for (let l = lo; l <= hi; l++) { let c = 0, e2 = 0; for (let i = 0; i < N; i++) { c += x[p + i] * x[p + i + l]; e2 += x[p + i + l] * x[p + i + l]; } const r = c / Math.sqrt(e * e2 + 1e-9); if (r > best) { best = r; bl = l; } }
+    out.push(best > .55 ? 12 * Math.log2(sr / bl / 100) : null);
+  }
+  let a = out.findIndex(v => v !== null), b = out.length - 1; while (b > 0 && out[b] === null) b--;
+  const seg = a < 0 ? [] : out.slice(a, b + 1), v = seg.filter(y => y !== null).sort((m, n) => m - n), med = v[Math.floor(v.length / 2)] || 0;
+  return seg.map((y, i) => { if (y === null) return null; const w = seg.slice(Math.max(0, i - 2), i + 3).filter(z => z !== null).sort((m, n) => m - n); return w[Math.floor(w.length / 2)] - med; });
+}
+function resample(c, n = 60) { const out = []; for (let i = 0; i < n; i++) { const j = Math.round(i / (n - 1) * (c.length - 1)); let y = c[j], d = 1; while (y == null && d < c.length) { y = c[j + d] ?? c[j - d]; d++; } out.push(y ?? 0); } return out; }
+function similarity(a, b) {
+  if (a.length < 5 || b.length < 5) return null;
+  const A = resample(a), B = resample(b), ma = A.reduce((s, v) => s + v, 0) / A.length, mb = B.reduce((s, v) => s + v, 0) / B.length;
+  let c = 0, sa = 0, sb = 0; for (let i = 0; i < A.length; i++) { c += (A[i] - ma) * (B[i] - mb); sa += (A[i] - ma) ** 2; sb += (B[i] - mb) ** 2; }
+  const r = c / Math.sqrt(sa * sb + 1e-9);
+  return Math.max(0, Math.min(100, Math.round((r + .2) / 1.2 * 100)));
+}
+function drawCurves(cv, a, b) {
+  const W = cv.width = cv.clientWidth * 2, H = cv.height = 300, g = cv.getContext('2d');
+  g.clearRect(0, 0, W, H); g.strokeStyle = 'rgba(128,128,128,.18)'; g.lineWidth = 2;
+  for (let y = 1; y < 4; y++) { g.beginPath(); g.moveTo(0, H * y / 4); g.lineTo(W, H * y / 4); g.stroke(); }
+  const line = (c, col, w) => { if (!c || !c.length) return; g.strokeStyle = col; g.lineWidth = w; g.lineCap = g.lineJoin = 'round'; g.beginPath(); let pen = false;
+    c.forEach((y, i) => { if (y === null) { pen = false; return; } const X = i / (c.length - 1) * (W - 20) + 10, Y = H / 2 - Math.max(-7, Math.min(7, y)) * (H / 16); pen ? g.lineTo(X, Y) : g.moveTo(X, Y); pen = true; }); g.stroke(); };
+  line(a, '#2BB36B', 7); line(b, '#F5B02E', 7);
+}
+window.mirror = async t => {
+  const k = audioKey(t);
+  document.body.insertAdjacentHTML('beforeend', `<div id="mirror"><div class="mir"><div class="row between"><b class="small" style="letter-spacing:.12em">🎙 SPRECH-SPIEGEL</b><button class="x" onclick="mirrorClose()">✕</button></div>
+    <div class="mir-pt">${esc(t)}</div>
+    <canvas id="mircv"></canvas><div class="mir-leg"><span><i style="background:#2BB36B"></i>Antonio</span><span><i style="background:#F5B02E"></i>Du</span><span id="mirscore"></span></div>
+    <p class="small center" id="mirhint">1. Antonio anhören · 2. Aufnahme drücken und nachsprechen · 3. Melodie vergleichen</p>
+    <div class="mir-btns"><button class="swb spk" onclick="say(${esc(JSON.stringify(t))})" aria-label="Antonio">${IC.spk}</button><button class="recbtn" id="recbtn" onclick="mirrorRec()"><i></i></button><button class="swb spk" id="mymine" onclick="mirrorMine()" disabled aria-label="Meine Aufnahme">▶</button></div></div></div>`);
+  say(t);
+  MR = { t, ref: null, me: null, url: null };
+  try { const ab = await fetch('audio-antonio/' + k + '.m4a').then(r => r.arrayBuffer()); MR.ref = await pitchOf(ab); drawCurves($('#mircv'), MR.ref, null); } catch (e) { $('#mirhint').textContent = 'Melodie von Antonio konnte nicht geladen werden – Aufnahme geht trotzdem.'; }
+};
+window.mirrorRec = async () => {
+  if (!MR) return;
+  if (MR.rec) { MR.rec.stop(); return; }
+  try {
+    stopSay();
+    const st = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
+    const rec = new MediaRecorder(st), ch = [];
+    rec.ondataavailable = e => e.data.size && ch.push(e.data);
+    rec.onstop = async () => {
+      st.getTracks().forEach(x => x.stop()); MR.rec = null; $('#recbtn').classList.remove('on');
+      const blob = new Blob(ch, { type: rec.mimeType || 'audio/mp4' }); if (MR.url) URL.revokeObjectURL(MR.url); MR.url = URL.createObjectURL(blob); $('#mymine').disabled = false;
+      $('#mirhint').textContent = 'Analysiere deine Melodie …';
+      try { MR.me = await pitchOf(await blob.arrayBuffer()); drawCurves($('#mircv'), MR.ref, MR.me); const sc = MR.ref ? similarity(MR.ref, MR.me) : null;
+        $('#mirscore').innerHTML = sc === null ? '' : `<b>${sc}% ähnlich</b>`;
+        $('#mirhint').textContent = sc === null ? 'Hör dir deine Aufnahme an ▶ und vergleiche.' : sc >= 75 ? 'Mandou bem! 🔥 Deine Melodie klingt brasilianisch.' : sc >= 50 ? 'Gut! Achte darauf, wo Antonio hoch- und runtergeht.' : 'Hör nochmal genau hin: Wo geht die Stimme hoch? Dann noch ein Versuch.';
+        if (sc >= 75) confetti();
+      } catch (e) { $('#mirhint').textContent = 'Aufnahme gespeichert – hör sie dir mit ▶ an.'; }
+      mirrorMine();
+    };
+    rec.start(); MR.rec = rec; $('#recbtn').classList.add('on'); $('#mirhint').textContent = 'Aufnahme läuft … sprich den Satz und tippe dann nochmal.';
+    setTimeout(() => MR && MR.rec === rec && rec.stop(), 9000);
+  } catch (e) { $('#mirhint').textContent = 'Kein Mikrofon-Zugriff. iPhone: Einstellungen → Safari → Mikrofon → Erlauben.'; }
+};
+window.mirrorMine = () => { if (MR && MR.url) { stopSay(); AUD.src = MR.url; AUD.defaultPlaybackRate = AUD.playbackRate = 1; AUD.play().catch(() => {}); } };
+window.mirrorClose = () => { if (MR && MR.rec) MR.rec.stop(); MR = null; const m = $('#mirror'); m && m.remove(); };
+
 // ---------- Swipe: Karten wischen wie bei Tinder/TikTok ----------
 // rechts = kann ich, links = nochmal (kommt gleich wieder), Antippen = umdrehen. Die Stimme spricht jede Karte automatisch.
 let SW = null;
@@ -737,7 +859,7 @@ function swCard(id, top) {
       <div class="row between"><span class="sw-chip">${u.e} ${esc(u.t)}</span>${isNew ? '<span class="sw-chip new">NEU</span>' : ''}</div>
       <div class="sw-pt">${esc(P(c.pt))}</div><div class="sw-pr">🗣 ${esc(c.pr)}</div>
       <div class="sw-hint">Antippen für Deutsch</div></div>
-    <div class="sw-face back"><div class="sw-chip">🇩🇪 Bedeutung</div><div class="sw-de">${esc(c.de)}</div><div class="sw-pt2">${esc(P(c.pt))}</div>${c.tip ? `<div class="sw-tip">💡 ${esc(c.tip)}</div>` : ''}</div></div>
+    <div class="sw-face back"><div class="sw-chip">🇩🇪 Bedeutung</div><div class="sw-de">${esc(c.de)}</div><div class="sw-pt2">${esc(P(c.pt))}</div>${spokenBox(c.pt, 1)}${c.tip ? `<div class="sw-tip">💡 ${esc(c.tip)}</div>` : ''}</div></div>
     <div class="stamp yes">KANN ICH</div><div class="stamp no">NOCHMAL</div></div>`;
 }
 function drawSwipe() {
@@ -827,7 +949,7 @@ function rioScene(mode = skyMode(), withFlag = true, par = 'xMidYMax slice') {
   const k = SKY[mode], id = 'r' + (RIO_ID++), [sx, sy, sr, sc] = k.sun, night = mode === 'night';
   const stars = night || mode === 'dawn' ? Array.from({ length: night ? 46 : 14 }, (_, i) => { const x = (i * 97) % 400, y = (i * 53) % (night ? 150 : 70), r = i % 5 ? .8 : 1.4; return `<circle cx="${x}" cy="${y}" r="${r}" style="--tw:${(i % 7) * .4}s"/>`; }).join('') : '';
   const clouds = night ? '' : [[40, 40, 1], [210, 70, .8], [330, 28, .7]].map(([x, y, s], i) => `<g class="cloud" style="--cd:${-i * 9}s" transform="translate(${x} ${y}) scale(${s})"><ellipse cx="0" cy="0" rx="34" ry="9"/><ellipse cx="-12" cy="-6" rx="14" ry="9"/><ellipse cx="8" cy="-9" rx="16" ry="11"/></g>`).join('');
-  const refl = Array.from({ length: 8 }, (_, i) => `<rect x="${sx - (sr * .8 - i * 2.4)}" y="${183 + i * 6.5}" width="${(sr * .8 - i * 2.4) * 2}" height="1.8" rx=".9" style="--rd:${i * .25}s"/>`).join('');
+  const refl = Array.from({ length: 8 }, (_, i) => { const hw = Math.max(1.5, sr * .8 - i * 2.4 * sr / 30); return `<rect x="${(sx - hw).toFixed(1)}" y="${183 + i * 6.5}" width="${(hw * 2).toFixed(1)}" height="1.8" rx=".9" style="--rd:${i * .25}s"/>`; }).join('');
   const lights = night || mode === 'dusk' ? Array.from({ length: 34 }, (_, i) => `<circle cx="${96 + i * 6.3 + (i % 3)}" cy="${175 - (i % 4) * 1.6}" r="${i % 4 ? .9 : 1.3}" style="--tw:${(i % 6) * .5}s"/>`).join('') : '';
   const leaves = [[-172, 1.45], [-140, 1.35], [-104, 1.15], [-62, 1.25], [-24, 1.45], [10, 1.3], [-200, 1.2]].map(([a, sc2]) => `<path d="${LEAF}" transform="rotate(${a}) scale(${sc2})"/>`).join('');
   return `<div class="rio-wrap" aria-hidden="true"><svg class="rio-svg" viewBox="0 0 400 260" preserveAspectRatio="${par}">
@@ -1127,7 +1249,7 @@ function plan() {
     <label class="field"><span>Name deines Mitbewohners</span><input value="${esc(S.partnerName)}" onchange="S.partnerName=this.value.trim();save()"></label>
     <label class="field"><span>Neue Sätze pro Tag</span><select onchange="S.set.newPerDay=+this.value;save();render()">${[3, 4, 6, 8, 10, 12].map(n => `<option ${S.set.newPerDay === n ? 'selected' : ''} value="${n}">${n}${n === 6 ? ' (empfohlen)' : ''}</option>`).join('')}</select></label>
     <label class="field"><span>Länge einer Einheit</span><select onchange="S.set.len=+this.value;save()">${[[8, 'Kurz · ca. 3 Min'], [12, 'Normal · ca. 5 Min'], [18, 'Lang · ca. 8 Min']].map(([n, l]) => `<option ${S.set.len === n ? 'selected' : ''} value="${n}">${l}</option>`).join('')}</select></label>
-    <label class="field"><span>Sprechtempo</span><select onchange="S.set.rate=+this.value;save();say('Oi, tudo bem? Bora aprender português!')">${[[0.75, 'Langsam'], [0.9, 'Normal'], [1, 'Schnell']].map(([n, l]) => `<option ${S.set.rate === n ? 'selected' : ''} value="${n}">${l}</option>`).join('')}</select></label>
+    <label class="field"><span>Sprechtempo</span><select onchange="S.set.rate=+this.value;save();say('Oi, tudo bem? Bora aprender português!')">${[[0.75, 'Langsam'], [0.9, 'Normal'], [1, 'Schnell'], [1.3, 'Echt-Tempo ⚡ (wie Brasilianer reden)']].map(([n, l]) => `<option ${S.set.rate === n ? 'selected' : ''} value="${n}">${l}</option>`).join('')}</select></label>
     <button class="btn ghost" onclick="say('Oi, tudo bem? Bora aprender português!')">🔊 Stimme testen</button>
     <p class="small mt">Kein Ton? Lautstärke-Tasten am iPhone hochdrehen – die Aufnahmen laufen auch im Lautlos-Modus.</p>
   </div>

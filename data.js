@@ -636,3 +636,100 @@ const MISSIONS = [
   ['🏆','Sonntags-Duell: wer holt mehr XP diese Woche?',''],
   ['🔥','21 Tage! Die Gewohnheit steht. Bora!','Ab jetzt: einfach dranbleiben']
 ];
+
+// ---------- Echt Brasil: echte Brasilianer aus Straßeninterviews (YouTube-Kanal „Easy Portuguese“) ----------
+// Die App spielt nur den Ausschnitt im eingebetteten YouTube-Video ab (s = Start, e = Ende in Sekunden).
+// pt = so wird es wirklich gesagt, f = Schulbuch-Version, pr = Aussprache, n = Erklärung
+const VIDEOS = {
+  'NpMxXJ6pW_4': { t:'Dating in Brasilien', e:'💘' },
+  'Z420ttxv-0Y': { t:'Freizeit & Träume', e:'🌴' },
+  '3RncX6cLYvI': { t:'Alltag & Wochenende', e:'☀️' }
+};
+const REAL = [
+  {v:'NpMxXJ6pW_4', s:47.5, e:50, pt:'Eu tô namorando', f:'Eu estou namorando', de:'Ich bin vergeben / hab eine Beziehung', pr:'eu to na-mo-RAN-du', n:'„Tô“ statt „estou“ – so redet wirklich jeder.'},
+  {v:'NpMxXJ6pW_4', s:76, e:80.5, pt:'Depende muito da situação que você tá', f:'Depende muito da situação em que você está', de:'Kommt sehr drauf an, in welcher Situation du gerade bist', pr:'de-PEN-dschi MUI-tu da ssi-tu-a-SSAUN ki wo-SSE ta', n:'„Tá“ = está. Das „em“ fällt im Gesprochenen einfach weg.'},
+  {v:'NpMxXJ6pW_4', s:142.5, e:147, pt:'A gente foi conversando, primeiro começou com uma amizade', f:'Nós fomos conversando, primeiro começou com uma amizade', de:'Wir haben immer mehr geredet, zuerst war es Freundschaft', pr:'a SCHEN-tschi foi kon-wer-SSAN-du, pri-MEI-ru ko-me-SSOU kong U-ma a-mi-SA-dschi', n:'„A gente“ statt „nós“ – im Alltag fast immer.'},
+  {v:'NpMxXJ6pW_4', s:163.5, e:168, pt:'Todo mundo fala que não parecia que eu tava a fim dele', f:'Todos dizem que não parecia que eu estava interessada nele', de:'Alle sagen, man hat nicht gemerkt, dass ich auf ihn stand', pr:'TO-du MUN-du FA-la ki naung pa-re-SSI-a ki eu TA-wa a fing DE-li', n:'„Tá a fim de alguém“ = auf jemanden stehen. „Tava“ = estava.'},
+  {v:'NpMxXJ6pW_4', s:189.5, e:193, pt:'Eu fiquei com tal pessoa, beijei a pessoa', f:'', de:'Ich hab mit der Person rumgemacht, sie geküsst', pr:'eu fi-KEI kong tau pe-SSO-a, bei-SCHEI a pe-SSO-a', n:'„Ficar com alguém“ = unverbindlich rummachen. Super wichtig fürs Nachtleben!'},
+  {v:'NpMxXJ6pW_4', s:261.5, e:268, pt:'Tô na balada e achei aquela pessoa bonita', f:'Estou na festa e achei aquela pessoa bonita', de:'Ich bin im Club und finde jemanden hübsch', pr:'to na ba-LA-da i a-SCHEI a-KÄ-la pe-SSO-a bo-NI-ta', n:'„Balada“ = Club, Party.'},
+  {v:'NpMxXJ6pW_4', s:376, e:381, pt:'É seu aniversário hoje? Porque você tá de parabéns!', f:'', de:'Hast du heute Geburtstag? Du verdienst nämlich Glückwünsche!', pr:'ä sseu a-ni-wer-SSA-rju O-schi? POR-ki wo-SSE ta dschi pa-ra-BÄNGS', n:'Eine „cantada“ (Anmachspruch). Wortspiel: „estar de parabéns“ = Lob verdienen.'},
+  {v:'NpMxXJ6pW_4', s:481, e:486, pt:'Não falar da ex no primeiro encontro', f:'', de:'Beim ersten Date nicht über die Ex reden', pr:'naung fa-LAR da äks nu pri-MEI-ru en-KON-tru', n:'„Encontro“ = Date.'},
+  {v:'NpMxXJ6pW_4', s:527.5, e:532, pt:'O que que você vai fazer tal dia?', f:'O que você vai fazer em tal dia?', de:'Was machst du an dem und dem Tag?', pr:'u ki ki wo-SSE wai fa-SER tau DSCHI-a', n:'Gesprochen oft doppelt: „o que que“.'},
+  {v:'NpMxXJ6pW_4', s:539, e:546, pt:'Vai fazer um tempo muito bom, cara, você quer fazer alguma coisa de tarde?', f:'', de:'Wird richtig schönes Wetter, Alter – willst du nachmittags was machen?', pr:'wai fa-SER ung TEM-pu MUI-tu bong, KA-ra, wo-SSE kär fa-SER au-GU-ma KOI-sa dschi TAR-dschi', n:'So lädt man jemanden locker ein.'},
+  {v:'Z420ttxv-0Y', s:4.5, e:10, pt:'Queria saber o que que a gente vai fazer nesse belo sábado', f:'Queria saber o que nós vamos fazer neste belo sábado', de:'Ich wollte wissen, was wir an diesem schönen Samstag machen', pr:'ke-RI-a ssa-BER u ki ki a SCHEN-tschi wai fa-SER NE-ssi BÄ-lu SSA-ba-du', n:'„Queria“ = locker-höflich „ich wollte“.'},
+  {v:'Z420ttxv-0Y', s:176, e:180, pt:'Tô indo pra academia daqui a pouco', f:'Estou indo para a academia daqui a pouco', de:'Ich geh gleich ins Gym', pr:'to IN-du pra a-ka-de-MI-a da-KI a POU-ku', n:'„Pra“ = para a. „Daqui a pouco“ = gleich.'},
+  {v:'Z420ttxv-0Y', s:379, e:384, pt:'Ia curtir, curtir a vida', f:'Eu iria aproveitar a vida', de:'Ich würde das Leben genießen', pr:'I-a kur-TSCHIR, kur-TSCHIR a WI-da', n:'„Ia“ + Verb = würde. „Curtir“ = genießen, feiern, liken.'},
+  {v:'Z420ttxv-0Y', s:389, e:396, pt:'Ai, meu Deus, ai, gente, eu ia pra um resort com tudo pago', f:'', de:'Oh Gott, Leute, ich würde in ein All-inclusive-Resort fahren', pr:'ai, meu DEUS, ai, SCHEN-tschi, eu I-a pra ung he-SOR-tschi kong TU-du PA-gu', n:'„Ai, gente!“ – typischer Ausruf, vor allem bei Frauen.'},
+  {v:'Z420ttxv-0Y', s:458.5, e:463, pt:'Deixa eu pensar… ai, tantas coisas', f:'Deixe-me pensar… tantas coisas', de:'Lass mich überlegen… ach, so viele Sachen', pr:'DEI-scha eu pen-SSAR… ai, TAN-tas KOI-sas', n:'„Deixa eu“ statt „deixe-me“ – das Schulbuch-Wort sagt niemand.'},
+  {v:'3RncX6cLYvI', s:25, e:31, pt:'Olha, eu acordo por volta de umas seis e meia da manhã', f:'', de:'Also, ich steh so gegen halb sieben auf', pr:'O-lja, eu a-KOR-du pur WOU-ta dschi U-mas SSEIS i MEI-a da ma-NJA', n:'„Olha…“ = „Also…“ – zum Einleiten, hörst du ständig.'},
+  {v:'3RncX6cLYvI', s:148, e:152.5, pt:'Depois do trabalho eu chego em casa morto', f:'', de:'Nach der Arbeit komm ich total kaputt heim', pr:'de-POIS du tra-BA-lju eu SCHE-gu äng KA-sa MOR-tu', n:'„Morto“ = tot → hier: fix und fertig.'},
+  {v:'3RncX6cLYvI', s:228.5, e:235, pt:'Ou eu morro no sofá', f:'', de:'Oder ich häng tot auf dem Sofa', pr:'ou eu MO-hu nu sso-FA', n:'Witzig übertrieben – so reden Brasilianer gern.'},
+  {v:'3RncX6cLYvI', s:404, e:409, pt:'Dinheiro! Tô brincando', f:'Dinheiro! Estou brincando', de:'Geld! Spaß!', pr:'dschi-NJEI-ru! to brin-KAN-du', n:'„Tô brincando“ = ich mach nur Spaß.'},
+  {v:'3RncX6cLYvI', s:502, e:508.5, pt:'Num dia de sol, sair pra tomar uma cervejinha', f:'Em um dia de sol, sair para tomar uma cerveja', de:'An einem sonnigen Tag raus und ein Bierchen trinken', pr:'nung DSCHI-a dschi ssou, ssa-IR pra to-MAR U-ma sser-we-SCHI-nja', n:'„Num“ = em um. Die Endung „-inha“ macht alles gemütlicher.'},
+  {v:'3RncX6cLYvI', s:545, e:551, pt:'Gosto de encontrar os meus amigos, sair pra jantar, tomar uma cerveja', f:'', de:'Ich treff gern meine Freunde, geh essen, trink ein Bier', pr:'GOS-tu dschi en-kon-TRAR us meus a-MI-gus, ssa-IR pra schan-TAR, to-MAR U-ma sser-WE-scha', n:''}
+];
+UNITS.push({ id:'u16', t:'Echt Brasil', e:'🎥', c:'#C2410C',
+  tip:'Sätze von echten Brasilianern auf der Straße – so wie sie wirklich reden. Unter „Themen → Echt 🇧🇷“ hörst du jeden Satz im Original-Video.',
+  items: REAL.map(r => [r.pt, r.de, r.pr, r.n]) });
+
+// So sagt man’s wirklich: Schulbuch-Satz → gesprochene Version (+ kurze Erklärung)
+const SPOKEN = [
+  {w:'Tudo bem?', sp:'Tudo certo?', n:'Genauso häufig, klingt lockerer'},
+  {w:'Tudo bom, e você?', sp:'Tudo, e cê?', n:'„Cê“ = gesprochenes „você“'},
+  {w:'Obrigado', sp:'Brigado!', n:'Das „O“ wird verschluckt'},
+  {w:'Desculpa', sp:'Foi mal!', n:'Unter Freunden: „Sorry, mein Fehler“'},
+  {w:'Com licença', sp:'Licença', n:''},
+  {w:'Até logo', sp:'Falou!', n:'Lockerer Abschied unter Jungs'},
+  {w:'Eu não entendo', sp:'Num entendi', n:'„Num“ = gesprochenes „não“ vor dem Verb'},
+  {w:'Fala mais devagar, por favor', sp:'Fala mais devagar aí', n:''},
+  {w:'Você fala inglês?', sp:'Cê fala inglês?', n:''},
+  {w:'Como você se chama?', sp:'Qual teu nome?', n:''},
+  {w:'De onde você é?', sp:'Cê é de onde?', n:'Fragewort ans Ende – typisch gesprochen'},
+  {w:'Quantos anos você tem?', sp:'Cê tem quantos anos?', n:''},
+  {w:'O que você faz?', sp:'Cê trabalha com quê?', n:''},
+  {w:'Você mora aqui?', sp:'Cê mora aqui?', n:''},
+  {w:'Eu tenho vinte e cinco anos', sp:'Tenho vinte e cinco', n:'„Eu“ und „anos“ fallen weg'},
+  {w:'Estou de férias', sp:'Tô de férias', n:''},
+  {w:'Você tem Instagram?', sp:'Cê tem Insta?', n:''},
+  {w:'Me passa seu número?', sp:'Me passa teu zap?', n:'„Zap“ = WhatsApp'},
+  {w:'Vamos manter contato!', sp:'Bora se falando!', n:''},
+  {w:'Uma mesa para dois, por favor', sp:'Mesa pra dois, por favor', n:'„Pra“ = para'},
+  {w:'Me vê uma cerveja, por favor', sp:'Me vê uma breja aí', n:'„Breja“ = Bier (Slang)'},
+  {w:'Mais uma, por favor', sp:'Desce mais uma!', n:'Wörtlich „lass noch eine runterkommen“'},
+  {w:'O que você recomenda?', sp:'O que cê recomenda?', n:''},
+  {w:'Está delicioso!', sp:'Tá uma delícia!', n:''},
+  {w:'Quanto custa?', sp:'Quanto que é?', n:'Das „que“ wird gern eingeschoben'},
+  {w:'Para viagem', sp:'Pra viagem', n:''},
+  {w:'Bem gelada!', sp:'Bem geladinha!', n:'„-inha“ = noch schöner kalt'},
+  {w:'Só isso, obrigado', sp:'Só isso, brigado', n:''},
+  {w:'Cinquenta reais', sp:'Cinquenta conto', n:'„Conto“ = Real (Slang)'},
+  {w:'É muito caro', sp:'Tá muito caro, hein', n:'„Hein“ am Ende = „echt jetzt“'},
+  {w:'Onde fica a praia?', sp:'Onde que fica a praia?', n:''},
+  {w:'Estou perdido', sp:'Tô perdidão', n:'„-ão“ verstärkt: total verloren'},
+  {w:'Pode me ajudar?', sp:'Me dá uma força?', n:'Wörtlich „gibst du mir eine Kraft?“'},
+  {w:'Vamos à praia?', sp:'Bora pra praia?', n:''},
+  {w:'Vamos sair hoje à noite?', sp:'Bora sair hoje?', n:''},
+  {w:'Onde tem uma festa boa?', sp:'Onde que tá rolando uma festa boa?', n:'„Rolar“ = abgehen, stattfinden'},
+  {w:'Eu te pago uma bebida', sp:'Deixa que essa é minha', n:'„Lass mal, die geht auf mich“'},
+  {w:'Vamos dançar?', sp:'Bora dançar?', n:''},
+  {w:'Eu não sei dançar forró', sp:'Num sei dançar forró', n:''},
+  {w:'Você vem sempre aqui?', sp:'Cê sempre vem aqui?', n:''},
+  {w:'Vamos tirar uma foto?', sp:'Bora tirar uma foto?', n:''},
+  {w:'Você está muito bonita hoje', sp:'Cê tá linda hoje, hein', n:''},
+  {w:'Gostei muito de conversar com você', sp:'Curti muito conversar com você', n:'„Curtir“ = genießen, mögen'},
+  {w:'Quer sair comigo?', sp:'Bora sair qualquer dia?', n:'Lockerer, weniger Druck'},
+  {w:'Posso te ver de novo?', sp:'A gente se vê de novo?', n:''},
+  {w:'Estou com saudade', sp:'Tô com saudade', n:''},
+  {w:'Só estou olhando', sp:'Só tô dando uma olhada', n:''},
+  {w:'Estou passando mal', sp:'Tô passando mal', n:''},
+  {w:'Fui roubado', sp:'Me roubaram', n:''},
+  {w:'Perdi meu celular', sp:'Perdi meu cel', n:''},
+  {w:'Eu estou', sp:'Eu tô', n:''},
+  {w:'Você treina?', sp:'Cê treina?', n:''},
+  {w:'Vamos treinar juntos?', sp:'Bora treinar junto?', n:''},
+  {w:'Vamos ver o jogo?', sp:'Bora ver o jogo?', n:''},
+  {w:'Estou todo suado', sp:'Tô todo suado', n:''},
+  {w:'Precisamos ir ao mercado', sp:'A gente precisa ir no mercado', n:'„Ir no“ statt „ir ao“ – so spricht man'},
+  {w:'Vamos arrumar a casa?', sp:'Bora arrumar a casa?', n:''}
+];
+const SPK = Object.fromEntries(SPOKEN.map(x => [x.w, x]));
