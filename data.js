@@ -392,7 +392,7 @@ const SCENES = [
   {them:'Beleza! Mais alguma coisa?', de:'Alles klar! Sonst noch etwas?', opts:['Tô com sede','Não, só isso. Aceita cartão?','Eu não gosto de praia'], ok:1},
   {them:'Aceito sim, ou Pix.', de:'Ja, nehme ich – oder Pix.', opts:['Valeu!','Socorro!','Quantos anos você tem?'], ok:0}
 ]},
-{ id:'s2', t:'Kennenlernen am Strand', e:'🏖️', unit:'u2', who:'Ana', steps:[
+{ id:'s2', t:'Kennenlernen am Strand', e:'🏖️', unit:'u2', who:'Ana', fem:1, steps:[
   {them:'Oi! Vocês não são daqui, né?', de:'Hi! Ihr seid nicht von hier, oder?', opts:['Não, a gente é da Alemanha','Sim, a conta por favor','Fica com o troco'], ok:0},
   {them:'Que legal! Como você se chama?', de:'Wie cool! Wie heißt du?', opts:['Tem banheiro?','Meu nome é Jonathan. E você?','Eu treino todo dia'], ok:1},
   {them:'Eu sou a Ana. Prazer! Quanto tempo vocês vão ficar?', de:'Ich bin Ana. Freut mich! Wie lange bleibt ihr?', opts:['Dois meses','Dez reais','À direita'], ok:0},
@@ -405,21 +405,21 @@ const SCENES = [
   {them:'Uns vinte minutos, com esse trânsito.', de:'So zwanzig Minuten, bei dem Verkehr.', opts:['Tranquilo!','Eu não gosto de você','Para viagem'], ok:0},
   {them:'Pode ser aqui ou na esquina?', de:'Hier oder an der Ecke?', opts:['Me deixa aqui, por favor. Valeu!','Uma mesa para dois','Vamos dançar?'], ok:0}
 ]},
-{ id:'s4', t:'Auf der Party', e:'🎶', unit:'u7', who:'Júlia', steps:[
+{ id:'s4', t:'Auf der Party', e:'🎶', unit:'u7', who:'Júlia', fem:1, steps:[
   {them:'Oi! Você tá curtindo a festa?', de:'Hi! Gefällt dir die Party?', opts:['Muito! Que música boa!','A conta, por favor','Estou passando mal'], ok:0},
   {them:'De onde você é? Seu sotaque é diferente!', de:'Woher kommst du? Dein Akzent ist anders!', opts:['Sou da Alemanha. Eu falo um pouco de português','Sem pimenta','Ali'], ok:0},
   {them:'Você fala bem! Você dança forró?', de:'Du sprichst gut! Tanzt du Forró?', opts:['Não sei dançar… Me ensina?','Vou levar esse','Cinquenta reais'], ok:0},
   {them:'Claro, vem!', de:'Klar, komm!', opts:['Você dança muito bem!','Fui roubado','Qual é a senha do Wi-Fi?'], ok:0},
   {them:'Obrigada! Você aprende rápido.', de:'Danke! Du lernst schnell.', opts:['Adorei te conhecer. Me passa seu número?','Onde fica o hospital?','Tem desconto?'], ok:0}
 ]},
-{ id:'s5', t:'Im Restaurant', e:'🍽️', unit:'u3', who:'Kellnerin', steps:[
+{ id:'s5', t:'Im Restaurant', e:'🍽️', unit:'u3', who:'Kellnerin', fem:1, steps:[
   {them:'Boa noite! Quantas pessoas?', de:'Guten Abend! Wie viele Personen?', opts:['Uma mesa para dois, por favor','Eu tenho vinte e cinco anos','Bom dia'], ok:0},
   {them:'Aqui está o cardápio.', de:'Hier ist die Speisekarte.', opts:['Obrigado! O que você recomenda?','Socorro!','Tchau'], ok:0},
   {them:'A picanha é muito boa hoje.', de:'Die Picanha ist heute sehr gut.', opts:['Então duas picanhas e duas cervejas bem geladas','Eu sou personal trainer','Não entendo nada, tchau'], ok:0},
   {them:'Tudo certo com a comida?', de:'Ist alles in Ordnung mit dem Essen?', opts:['Está delicioso!','Estou perdido','É longe?'], ok:0},
   {them:'Querem mais alguma coisa?', de:'Möchtet ihr noch etwas?', opts:['Não, obrigado. A conta, por favor','Vamos à praia?','Sim, por quê?'], ok:0}
 ]},
-{ id:'s6', t:'In der Apotheke', e:'💊', unit:'u10', who:'Apothekerin', steps:[
+{ id:'s6', t:'In der Apotheke', e:'💊', unit:'u10', who:'Apothekerin', fem:1, steps:[
   {them:'Boa tarde! Posso ajudar?', de:'Guten Tag! Kann ich helfen?', opts:['Boa tarde! Tem protetor solar?','Bora malhar!','Mais uma, por favor'], ok:0},
   {them:'Tem sim, fator 30 ou 50?', de:'Ja, Faktor 30 oder 50?', opts:['Cinquenta, por favor. E tenho uma queimadura de sol','Dois meses','À esquerda'], ok:0},
   {them:'Para queimadura, esse gel é ótimo.', de:'Für Sonnenbrand ist dieses Gel super.', opts:['Vou levar esse. Quanto é?','Que sorriso lindo!','O aeroporto'], ok:0},
@@ -525,7 +525,7 @@ const HOME_SCENES = [
   [0,'Precisamos falar português muito bem até lá','Bis dahin müssen wir richtig gut Portugiesisch können'],
   [1,'Por isso a gente treina todo dia!','Darum üben wir jeden Tag!']
 ]},
-{ id:'h10', t:'Besuch kommt vorbei', e:'💛', a:'Gastgeber', b:'Carol (Besuch)', free:'Wer Carol gespielt hat, stellt jetzt 3 eigene Fragen – der Gastgeber antwortet spontan.', lines:[
+{ id:'h10', t:'Besuch kommt vorbei', e:'💛', a:'Gastgeber', b:'Carol (Besuch)', fb:1, free:'Wer Carol gespielt hat, stellt jetzt 3 eigene Fragen – der Gastgeber antwortet spontan.', lines:[
   [1,'Oi! Que apartamento bonito!','Hi! Was für eine schöne Wohnung!'],
   [0,'Obrigado! Fica à vontade','Danke! Fühl dich wie zu Hause'],
   [1,'Que cheiro bom! Você cozinhou?','Riecht gut! Hast du gekocht?'],

@@ -106,13 +106,14 @@ function synth(t, slow) {
   // iOS verschluckt speak() direkt nach cancel() – kurz warten
   if (speechSynthesis.speaking || speechSynthesis.pending) { speechSynthesis.cancel(); setTimeout(go, 120); } else go();
 }
-function say(t, slow) {
+function say(t, slow, fem) {
   const own = P(t), k = audioKey(t);
+  const dir = fem && typeof AUDIO_F !== 'undefined' && AUDIO_F.has(k) ? 'audio-f/' : 'audio-antonio/';
   // Sätze mit eigenem Namen (z. B. „Meu nome é …“) gibt es nicht als Aufnahme
   if (own !== t || typeof AUDIO === 'undefined' || !AUDIO.has(k)) return synth(own, slow);
   if (hasSynth) speechSynthesis.cancel();
   AUD.onerror = () => synth(own, slow);
-  AUD.src = 'audio-antonio/' + k + '.m4a';
+  AUD.src = dir + k + '.m4a';
   AUD.preservesPitch = true;
   AUD.defaultPlaybackRate = AUD.playbackRate = slow ? 0.7 : (RATE[S.set.rate] || 1);
   const p = AUD.play();
@@ -331,7 +332,7 @@ function learn() {
   if (UI.seg === 'echt') return echtView(seg);
   if (UI.seg === 'szenen') {
     return `<h1>Szenen</h1><p class="sub">Kleine Rollenspiele aus dem echten Brasilien-Alltag. Du wählst die passende Antwort.</p>${seg}
-    <div class="list">${SCENES.map(s => `<button class="li" onclick="playScene('${s.id}')"><div style="font-size:30px">${s.e}</div><div class="grow"><div class="pt">${esc(s.t)}</div><div class="de">mit ${esc(s.who)} · ${s.steps.length} Schritte</div></div>${S.scenes[s.id] ? '<span class="pill ok">✓</span>' : '<span class="chev">›</span>'}</button>`).join('')}</div>`;
+    <div class="list">${SCENES.map(s => `<button class="li" onclick="playScene('${s.id}')"><div style="font-size:30px">${s.e}</div><div class="grow"><div class="pt">${esc(s.t)}</div><div class="de">mit ${esc(s.who)} · ${s.steps.length} Schritte</div></div>${S.scenes[s.id] || (S.scenesH && S.scenesH[s.id]) ? sceneStars(s.id) : '<span class="chev">›</span>'}</button>`).join('')}</div>`;
   }
   return `<h1>Themen</h1><p class="sub">${CARDS.length} Sätze für zwei Monate Brasilien – sortiert nach Nützlichkeit.</p>${seg}
   <div class="units">${UNITS.map(u => {
@@ -358,6 +359,51 @@ function unitView(uid) {
     <div style="display:flex;flex-direction:column;align-items:center;gap:8px">${sayBtn(c.id, 1)}${dots(c.id)}</div></div>`; }).join('')}</div>`;
 }
 window.setFocus = uid => { S.focus = S.focus === uid ? null : uid; save(); toast(S.focus ? `🎯 Neue Sätze kommen jetzt aus „${UNIT[uid].t}“` : 'Fokus entfernt – die App wählt wieder automatisch'); render(); };
+
+// ---------- Töne (per Web Audio erzeugt, keine Dateien) ----------
+const SFX = { ctx: null };
+function sfx(kind) {
+  if (S.set.sfx === false) return;
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext, c = SFX.ctx || (SFX.ctx = new AC());
+    if (c.state === 'suspended') c.resume();
+    const now = c.currentTime + .01;
+    const N = { ok: [[880, 0, .1], [1318.5, .08, .22]], no: [[233, 0, .16], [196, .11, .26]], swipe: [[740, 0, .07]],
+      win: [[523.25, 0, .14], [659.25, .11, .14], [783.99, .22, .14], [1046.5, .33, .5]], pop: [[1100, 0, .05]] }[kind] || [];
+    N.forEach(([f, t, d]) => [[1, kind === 'no' ? 'triangle' : 'sine', .2], [2, 'sine', .05]].forEach(([m, typ, vol]) => {
+      const o = c.createOscillator(), g = c.createGain(); o.type = typ; o.frequency.value = f * m;
+      g.gain.setValueAtTime(0, now + t); g.gain.linearRampToValueAtTime(vol, now + t + .012); g.gain.exponentialRampToValueAtTime(.0001, now + t + d);
+      o.connect(g); g.connect(c.destination); o.start(now + t); o.stop(now + t + d + .03);
+    }));
+  } catch (e) {}
+}
+
+// ---------- FSRS: Wiederholungen nach dem Free Spaced Repetition Scheduler (FSRS-5, Standardwerte) ----------
+// Statt fester Kästen rechnet FSRS für jeden Satz die „Stabilität“ aus: so viele Tage bleibt er zu 90 % im Kopf.
+const FW = [0.40255, 1.18385, 3.173, 15.69105, 7.1949, 0.5345, 1.4604, 0.0046, 1.54575, 0.1192, 1.01925, 1.9395, 0.11, 0.29605, 2.2698, 0.2315, 2.9898, 0.51655, 0.6621];
+const FDECAY = -0.5, FFACTOR = 19 / 81;
+const clampD = d => Math.min(10, Math.max(1, d));
+const boxFromS = st => st < 1 ? 1 : st < 2.5 ? 2 : st < 5 ? 3 : st < 10 ? 4 : st < 21 ? 5 : st < 45 ? 6 : 7;
+function fsrs(s, g) {   // g: 1 = falsch, 3 = richtig
+  const t = today();
+  if (!s.S && s.b >= 1) { s.S = Math.max(.5, INT[s.b] || 1); s.D = 5; s.last = s.due - (INT[s.b] || 0); }   // alter Lernstand → FSRS
+  if (!s.S) { s.S = FW[g - 1]; s.D = clampD(FW[4] - Math.exp(FW[5] * (g - 1)) + 1); }
+  else {
+    const el = Math.max(0, t - (s.last ?? t));
+    if (el === 0) s.S = s.S * Math.exp(FW[17] * (g - 3 + FW[18]));
+    else {
+      const R = Math.pow(1 + FFACTOR * el / s.S, FDECAY);
+      s.S = g === 1 ? Math.min(s.S, FW[11] * Math.pow(s.D, -FW[12]) * (Math.pow(s.S + 1, FW[13]) - 1) * Math.exp(FW[14] * (1 - R)))
+        : s.S * (Math.exp(FW[8]) * (11 - s.D) * Math.pow(s.S, -FW[9]) * (Math.exp(FW[10] * (1 - R)) - 1) + 1);
+    }
+    const d1 = s.D + (-FW[6] * (g - 3)) * (10 - s.D) / 9, d0 = FW[4] - Math.exp(FW[5] * 3) + 1;
+    s.D = clampD(FW[7] * d0 + (1 - FW[7]) * d1);
+  }
+  s.S = Math.max(.1, s.S); s.last = t;
+  if (g === 1) { s.b = 1; s.due = t; }
+  else { s.b = boxFromS(s.S); s.due = t + Math.min(365, Math.max(1, Math.round(s.S))); }
+  return s;
+}
 
 // ---------- Übungs-Einheiten ----------
 let SES = null;
@@ -509,16 +555,16 @@ function feedback(ok, note = '') {
   if (ok) {
     SES.ok++; SES.xp += t.retry ? 5 : 10; s.r++; limeDrop();
     if (t.retry) s.due = today() + 1;
-    else if (!t.bonus) { s.b = Math.min(INT.length - 1, s.b + 1); s.due = today() + INT[s.b]; }
+    else if (!t.bonus) fsrs(s, 3);
     S.prio = S.prio.filter(id => id !== c.id);
   } else {
-    s.w++; s.b = Math.max(1, Math.min(s.b, 1)); s.due = today();
+    s.w++; fsrs(s, 1);
     if (!SES.wrong.includes(c.id)) SES.wrong.push(c.id);
     if (!t.retry) SES.tasks.push({ k: 'mc_de', c, retry: true });
     const el = document.querySelector('.sbody'); el && el.classList.add('shake');
   }
   save();
-  say(c.pt);
+  sfx(ok ? 'ok' : 'no'); setTimeout(() => say(c.pt), ok ? 260 : 380);
   const praise = ['Richtig! 🎉', 'Perfeito! 🙌', 'Isso aí! 🔥', 'Muito bem! ✨', 'Mandou bem! 💪'];
   $('#foot').innerHTML = `<div class="fb ${ok ? 'ok' : 'no'}"><h3>${ok ? praise[Math.floor(Math.random() * praise.length)] : 'Fast! Die Lösung:'}</h3>
     <div class="sol">${esc(P(c.pt))} <span class="small">· ${esc(c.de)}</span></div>${note ? `<p class="small" style="margin:-6px 0 12px">${esc(note)}</p>` : ''}
@@ -556,36 +602,56 @@ function endSession() {
 
 // ---------- Szenen ----------
 let SC = null;
-window.playScene = id => { SC = { s: SCENES.find(x => x.id === id), i: 0, log: [], miss: 0 }; openOverlay(); drawScene(); };
+const sceneStars = id => `${S.scenes[id] ? '<span class="pill ok" title="mit Text">💬✓</span>' : ''}${S.scenesH && S.scenesH[id] ? '<span class="pill sea" title="nur hören">🎧✓</span>' : ''}`;
+window.playScene = id => {
+  const s = SCENES.find(x => x.id === id);
+  SC = { s, i: 0, log: [], miss: 0, hear: false, typing: false, t0: new Date() };
+  openOverlay();
+  $('#overlay').innerHTML = `<div class="sx"><div class="shead"><button class="x" onclick="closeOverlay()">✕</button><div class="grow"></div></div>
+    <div class="sbody"><div class="scover"><div class="savatar big">${s.e}</div><h1 class="center">${esc(s.t)}</h1><p class="sub center">Chat mit ${esc(s.who)} · ${s.steps.length} Nachrichten</p></div>
+    <p class="small" style="font-weight:700;margin:22px 0 8px">STUFE WÄHLEN</p>
+    <button class="opt" onclick="sceneGo(false)"><b>💬 Mit Text</b> ${S.scenes[id] ? '✓' : ''}<br><span class="small">Du hörst und liest, was ${esc(s.who)} sagt.</span></button>
+    <button class="opt" onclick="sceneGo(true)"><b>🎧 Nur hören · Profi</b> ${S.scenesH && S.scenesH[id] ? '✓' : ''}<br><span class="small">Wie eine Sprachnachricht: kein Text, nur Stimme – wie in echt.</span></button></div></div>`;
+};
+window.sceneGo = hear => { SC.hear = hear; sceneStep(); };
+const hhmm = (d, plus) => { const x = new Date(d.getTime() + plus * 60000); return x.getHours() + ':' + String(x.getMinutes()).padStart(2, '0'); };
+function sceneStep() {
+  if (!SC) return;
+  SC.typing = true; drawScene();
+  setTimeout(() => { if (!SC) return; SC.typing = false; drawScene(); const st = SC.s.steps[SC.i]; if (st) say(st.them, 0, SC.s.fem); }, 650 + Math.min(1100, SC.s.steps[SC.i].them.length * 22));
+}
+const voiceNote = (txt, k, show) => `<div class="vnote"><button class="vplay" onclick="event.stopPropagation();say(${esc(JSON.stringify(txt))},0,SC.s.fem)">▶</button><div class="vwave">${Array.from({ length: 26 }, (_, i) => `<i style="height:${6 + Math.round(Math.abs(Math.sin(i * 1.7 + k)) * 16)}px"></i>`).join('')}</div><span class="vlen">0:0${Math.min(9, 1 + Math.round(txt.length / 14))}</span></div>${show ? `<div class="vtext">${esc(P(txt))}</div>` : ''}`;
 function drawScene() {
-  const s = SC.s, step = s.steps[SC.i];
-  const pct = Math.round((SC.i / s.steps.length) * 100);
-  const bubbles = SC.log.map(b => `<div class="bubble ${b.me ? 'me' : 'them'}">${esc(P(b.pt))}${b.de ? `<div class="t2">${esc(b.de)}</div>` : ''}</div>`).join('');
-  const cur = step ? `<div class="bubble them"><div class="row" style="gap:8px"><span class="grow">${esc(P(step.them))}</span><button class="say sm" onclick="say(SC.s.steps[SC.i].them)">${IC.spk}</button></div><div class="t2">${esc(step.de)}</div></div>` : '';
-  $('#overlay').innerHTML = `<div class="sx"><div class="shead"><button class="x" onclick="closeOverlay()">✕</button><div class="prog"><i style="width:${pct}%"></i></div>${caip(pct)}</div>
-    <div class="kind">${s.e} ${esc(s.t)} · mit ${esc(s.who)}</div>
-    <div class="sbody"><div class="chat" id="chat">${bubbles}${cur}</div>
-    ${step ? `<p class="small" style="margin:16px 0 0">Was antwortest du?</p><div class="opts">${shuffle(step.opts.map((o, i) => i)).map(i => `<button class="opt" id="so${i}" onclick="sceneAns(${i})">${esc(P(step.opts[i]))}</button>`).join('')}</div>` : ''}
-    </div><div class="sfoot" id="foot"></div></div>`;
-  const ch = document.querySelector('.sbody'); ch.scrollTop = ch.scrollHeight;
-  if (step) say(step.them);
+  const s = SC.s, step = s.steps[SC.i], pct = Math.round((SC.i / s.steps.length) * 100);
+  const bub = (b, n) => b.me ? `<div class="wa me">${esc(P(b.pt))}<span class="wat">${hhmm(SC.t0, n)} <b class="tick">✓✓</b></span></div>`
+    : `<div class="wa them">${SC.hear ? voiceNote(b.pt, n, true) : esc(P(b.pt))}${b.de && !SC.hear ? `<div class="t2">${esc(b.de)}</div>` : ''}<span class="wat">${hhmm(SC.t0, n)}</span></div>`;
+  const past = SC.log.map((b, n) => bub(b, n)).join('');
+  const cur = !step ? '' : SC.typing ? `<div class="wa them typing"><i></i><i></i><i></i></div>`
+    : `<div class="wa them new">${SC.hear ? voiceNote(step.them, SC.i * 3, false) : `<div class="row" style="gap:8px;align-items:flex-start"><span class="grow">${esc(P(step.them))}</span><button class="say sm" onclick="say(SC.s.steps[SC.i].them,0,SC.s.fem)">${IC.spk}</button></div><div class="t2">${esc(step.de)}</div>`}<span class="wat">${hhmm(SC.t0, SC.log.length)}</span></div>`;
+  const opts = step && !SC.typing ? `<div class="wa-opts">${shuffle(step.opts.map((o, i) => i)).map(i => `<button class="opt" id="so${i}" onclick="sceneAns(${i})">${esc(P(step.opts[i]))}</button>`).join('')}</div>` : '';
+  $('#overlay').innerHTML = `<div class="sx wasx"><div class="wahead"><button class="x" onclick="closeOverlay()">‹</button><div class="savatar">${s.e}</div>
+      <div class="grow"><b>${esc(s.who)}</b><span class="wast">${SC.typing ? 'digitando…' : 'online'}</span></div><div class="waprog"><i style="width:${pct}%"></i></div></div>
+    <div class="sbody wabody" id="chat"><div class="waday">${SC.hear ? '🎧 Nur hören' : 'Hoje'}</div>${past}${cur}</div>
+    <div class="wafoot">${SC.hear && step && !SC.typing ? `<p class="small center" style="margin-bottom:8px">Hör dir die Sprachnachricht an – was antwortest du?</p>` : ''}${opts}</div></div>`;
+  const ch = $('#chat'); ch.scrollTop = ch.scrollHeight;
 }
 window.sceneAns = i => {
   const step = SC.s.steps[SC.i];
-  if (i !== step.ok) { SC.miss++; $('#so' + i).classList.add('wrong', 'shake'); $('#so' + i).disabled = true; return; }
+  if (i !== step.ok) { SC.miss++; sfx('no'); const b = $('#so' + i); b.classList.add('wrong', 'shake'); b.disabled = true; return; }
+  sfx('ok');
   SC.log.push({ pt: step.them, de: step.de }, { pt: step.opts[i], me: true });
-  say(step.opts[i]); SC.i++;
-  setTimeout(() => { if (!SC) return; if (SC.i < SC.s.steps.length) drawScene(); else sceneEnd(); }, 1100);
+  SC.i++; drawScene(); setTimeout(() => say(step.opts[i]), 250);
+  setTimeout(() => { if (!SC) return; if (SC.i < SC.s.steps.length) sceneStep(); else sceneEnd(); }, 1500);
 };
 function sceneEnd() {
-  const s = SC.s, first = !S.scenes[s.id]; S.scenes[s.id] = true;
-  const xp = Math.max(10, 30 - SC.miss * 5);
+  const s = SC.s;
+  if (SC.hear) { S.scenesH = S.scenesH || {}; S.scenesH[s.id] = true; } else S.scenes[s.id] = true;
+  const xp = Math.max(10, (SC.hear ? 45 : 30) - SC.miss * 5);
   const wasDone = finishDay(xp);
-  confetti();
-  $('#overlay').innerHTML = `<div class="sx"><div class="sbody end"><div class="trophy">${s.e}</div><h1>Szene geschafft!</h1>
+  $('#overlay').innerHTML = `<div class="sx"><div class="sbody end"><div class="trophy">${samba()}</div><h1>${SC.hear ? 'Nur gehört – und verstanden!' : 'Szene geschafft!'}</h1>
     <p class="sub">${SC.miss ? SC.miss + '× daneben – beim nächsten Mal sitzt es.' : 'Ohne einen Fehler – wie ein Local! 🇧🇷'}</p>
     <div class="xpbig">+${xp} XP</div>${!wasDone ? `<p class="sub">Tag gesichert – Serie: 🔥 ${streakOf(myDays())}</p>` : ''}
-    <div class="card mt" style="text-align:left"><p class="small" style="font-weight:700;margin-bottom:6px">TIPP</p><p>Spielt die Szene jetzt zu zweit laut nach – einer ist ${esc(s.who)}, der andere antwortet ohne Handy.</p></div>
+    <div class="card mt" style="text-align:left"><p class="small" style="font-weight:700;margin-bottom:6px">${SC.hear ? 'TIPP' : 'NÄCHSTE STUFE'}</p><p>${SC.hear ? `Spielt die Szene jetzt zu zweit laut nach – einer ist ${esc(s.who)}, der andere antwortet ohne Handy.` : 'Probier die Szene als 🎧 Nur hören – so wie echte Sprachnachrichten in Brasilien.'}</p></div>
     </div><div class="sfoot"><button class="btn" onclick="closeOverlay()">Fertig</button></div></div>`;
 }
 
@@ -697,7 +763,7 @@ function drawLive() {
     <div class="sfoot">${LQ.show ? `<div class="btns" style="margin:0"><button class="btn red" onclick="liveRate(0)">✗ Nicht gewusst</button><button class="btn" onclick="liveRate(1)">✓ Gewusst</button></div>`
       : `<button class="btn sea" onclick="LQ.show=true;drawLive();sayId('${c.id}')">Lösung zeigen</button>`}</div></div>`;
 }
-window.liveRate = ok => { const id = LQ.cards[LQ.i]; if (ok) LQ.hit++; else LQ.miss.push(id); LQ.i++; LQ.show = false; drawLive(); };
+window.liveRate = ok => { sfx(ok ? 'ok' : 'no'); const id = LQ.cards[LQ.i]; if (ok) LQ.hit++; else LQ.miss.push(id); LQ.i++; LQ.show = false; drawLive(); };
 function liveEnd() {
   const name = LQ.who === 'p' ? pName() : S.me.name;
   if (LQ.who === 'me') LQ.miss.forEach(id => { const s = S.cards[id] || (S.cards[id] = { b: 1, due: today(), r: 0, w: 0 }); s.b = Math.max(1, Math.min(s.b, 1)); s.due = today(); });
@@ -892,15 +958,15 @@ window.swGo = dir => {
   if (!SW || SW.busy) return;
   const id = SW.q[SW.n], el = $('#swc'), s = S.cards[id] || (S.cards[id] = { b: 0, due: today(), r: 0, w: 0 });
   if (dir > 0) {
-    if (s.b < 1) { s.b = 1; s.due = today() + 1; dayRec(today()).n++; }
-    else if (s.due <= today()) { s.b = Math.min(INT.length - 1, s.b + 1); s.due = today() + INT[s.b]; }
+    if (s.b < 1) { dayRec(today()).n++; fsrs(s, 3); }
+    else if (s.due <= today()) fsrs(s, 3);
     s.r++; SW.ok++; SW.combo++; SW.best = Math.max(SW.best, SW.combo);
     SW.xp += SW.combo >= 5 ? 8 : 5; S.prio = S.prio.filter(x => x !== id);
   } else {
-    if (s.b >= 1) { s.w++; s.b = 1; s.due = today(); }
+    if (s.b >= 1) { s.w++; fsrs(s, 1); }
     SW.combo = 0; SW.q.splice(Math.min(SW.q.length, SW.n + 5), 0, id);   // kommt ein paar Karten später wieder
   }
-  SW.n++; SW.flip = false; save();
+  SW.n++; SW.flip = false; save(); sfx(dir > 0 ? 'ok' : 'swipe');
   if (SW.n === 10 && !SW.counted) { SW.counted = true; const was = finishDay(SW.xp); SW.xp = 0; SW.banked = true; toast(was ? '⚡ 10 Karten – weiter so!' : '🔥 Tag gesichert! Swipe ruhig weiter'); }
   if ([5, 10, 20].includes(SW.combo) && dir > 0) { confetti(); toast(`🔥 ${SW.combo}er Combo!`); }
   if (el) { SW.busy = true; el.style.transition = 'transform .28s ease, opacity .28s'; el.style.transform = `translate(${dir * 520}px,-40px) rotate(${dir * 28}deg)`; el.style.opacity = 0;
@@ -994,7 +1060,7 @@ function countUp() {
     requestAnimationFrame(step);
   });
 }
-const celebrate = () => setTimeout(() => { fireworks(); countUp(); }, 250);
+const celebrate = () => setTimeout(() => { fireworks(); countUp(); sfx('win'); }, 250);
 addEventListener('scroll', () => document.documentElement.style.setProperty('--py', Math.min(320, scrollY)), { passive: true });
 
 // Caipirinha-Glas: füllt sich mit dem Fortschritt, bei jeder richtigen Antwort fällt eine Limette hinein
@@ -1129,12 +1195,12 @@ function hsLine() {
     <div class="sbody"><div class="chat">${log}</div>
     <div class="turn r${r}"><div class="row" style="gap:10px"><div class="avatar ${r === 0 ? 'av-me' : 'av-p'}">${initial(name)}</div><div class="grow"><b>${esc(name)} ist dran</b><div class="small">${esc(hsRole(r))}</div></div><div class="small">${HS.i + 1}/${s.lines.length}</div></div>
       ${HS.mode === 'speak' ? `<div class="tde">${esc(de)}</div>` : ''}
-      ${showPt ? `<div class="row" style="gap:10px;margin-top:12px"><div class="tpt grow">${esc(P(pt))}</div><button class="say" onclick="say(HS.s.lines[HS.i][1])">${IC.spk}</button></div>${HS.mode === 'read' ? `<div class="small" style="margin-top:6px">${esc(de)}</div>` : ''}` : `<p class="small" style="margin-top:12px">🗣 Sag es laut auf Portugiesisch …</p>`}
+      ${showPt ? `<div class="row" style="gap:10px;margin-top:12px"><div class="tpt grow">${esc(P(pt))}</div><button class="say" onclick="say(HS.s.lines[HS.i][1], 0, HS.s.fb && HS.s.lines[HS.i][0] === 1)">${IC.spk}</button></div>${HS.mode === 'read' ? `<div class="small" style="margin-top:6px">${esc(de)}</div>` : ''}` : `<p class="small" style="margin-top:12px">🗣 Sag es laut auf Portugiesisch …</p>`}
     </div></div>
     <div class="sfoot">${HS.mode === 'read' ? `<button class="btn ${r === 0 ? '' : 'sea'}" onclick="HS.i++;hsLine()">Gesagt ✓ · weiter</button>`
       : HS.show ? `<div class="btns" style="margin:0"><button class="btn red" onclick="hsRate(0)">✗ Nicht ganz</button><button class="btn" onclick="hsRate(1)">✓ Richtig</button></div>`
-      : `<button class="btn sea" onclick="HS.show=true;hsLine();say(HS.s.lines[HS.i][1])">Aufdecken</button>`}</div></div>`;
-  if (HS.mode === 'read') say(pt);
+      : `<button class="btn sea" onclick="HS.show=true;hsLine();say(HS.s.lines[HS.i][1], 0, HS.s.fb && HS.s.lines[HS.i][0] === 1)">Aufdecken</button>`}</div></div>`;
+  if (HS.mode === 'read') say(pt, 0, HS.s.fb && r === 1);
 }
 window.hsLine = hsLine;
 window.hsRate = ok => { const r = HS.s.lines[HS.i][0]; HS.tot[r]++; if (ok) HS.hit[r]++; HS.i++; HS.show = false; hsLine(); };
@@ -1250,6 +1316,7 @@ function plan() {
     <label class="field"><span>Neue Sätze pro Tag</span><select onchange="S.set.newPerDay=+this.value;save();render()">${[3, 4, 6, 8, 10, 12].map(n => `<option ${S.set.newPerDay === n ? 'selected' : ''} value="${n}">${n}${n === 6 ? ' (empfohlen)' : ''}</option>`).join('')}</select></label>
     <label class="field"><span>Länge einer Einheit</span><select onchange="S.set.len=+this.value;save()">${[[8, 'Kurz · ca. 3 Min'], [12, 'Normal · ca. 5 Min'], [18, 'Lang · ca. 8 Min']].map(([n, l]) => `<option ${S.set.len === n ? 'selected' : ''} value="${n}">${l}</option>`).join('')}</select></label>
     <label class="field"><span>Sprechtempo</span><select onchange="S.set.rate=+this.value;save();say('Oi, tudo bem? Bora aprender português!')">${[[0.75, 'Langsam'], [0.9, 'Normal'], [1, 'Schnell'], [1.3, 'Echt-Tempo ⚡ (wie Brasilianer reden)']].map(([n, l]) => `<option ${S.set.rate === n ? 'selected' : ''} value="${n}">${l}</option>`).join('')}</select></label>
+    <label class="field"><span>Töne bei richtig / falsch</span><select onchange="S.set.sfx=this.value==='1';save();sfx('ok')"><option value="1" ${S.set.sfx !== false ? 'selected' : ''}>An</option><option value="0" ${S.set.sfx === false ? 'selected' : ''}>Aus</option></select></label>
     <button class="btn ghost" onclick="say('Oi, tudo bem? Bora aprender português!')">🔊 Stimme testen</button>
     <p class="small mt">Kein Ton? Lautstärke-Tasten am iPhone hochdrehen – die Aufnahmen laufen auch im Lautlos-Modus.</p>
   </div>

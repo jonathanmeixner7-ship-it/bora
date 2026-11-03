@@ -598,3 +598,39 @@ h1 em{font-style:italic}
 .recbtn.on i{width:28px;height:28px;border-radius:7px}
 .recbtn.on{animation:recPulse 1.2s ease-in-out infinite}
 @keyframes recPulse{50%{box-shadow:0 0 0 12px color-mix(in srgb,var(--red) 18%,transparent)}}
+
+/* ---------- Szenen 2.0: WhatsApp-Look ---------- */
+.scover{text-align:center;margin-top:8px}
+.savatar{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-size:22px;flex:none;background:linear-gradient(135deg,#F5B02E,#E2603F);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.savatar.big{width:96px;height:96px;font-size:50px;margin:10px auto 14px}
+.wasx{padding:0;--wabg:#EFE7DC;--wame:#D9FDD3;--wathem:#FFFFFF;--wainc:#111B21}
+@media (prefers-color-scheme: dark){.wasx{--wabg:#0B141A;--wame:#005C4B;--wathem:#202C33;--wainc:#E9EDEF}}
+.wahead{display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top)) 12px 10px 6px;background:linear-gradient(160deg,#13603D,#0B3B27);color:#fff;position:relative}
+.wahead .x{color:#fff;font-size:30px;width:34px}
+.wahead b{display:block;font-size:16px}
+.wast{font-size:12.5px;opacity:.8}
+.waprog{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(255,255,255,.12)}
+.waprog i{display:block;height:100%;background:var(--sun);transition:width .4s}
+.wabody{background:var(--wabg) var(--waves) 0 0/120px 48px;padding:12px 12px 8px;gap:2px}
+.wasx .wabody{background-blend-mode:normal}
+.waday{align-self:center;font-size:12px;font-weight:700;padding:5px 10px;border-radius:8px;background:color-mix(in srgb,var(--wathem) 85%,transparent);color:var(--wainc);margin:4px 0 10px;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.wa{position:relative;max-width:82%;padding:8px 10px 18px;border-radius:12px;margin:3px 0;font-size:16px;line-height:1.35;color:var(--wainc);box-shadow:0 1px 1px rgba(0,0,0,.1);animation:waIn .22s ease}
+@keyframes waIn{from{transform:translateY(8px) scale(.97);opacity:0}to{transform:none;opacity:1}}
+.wa.them{align-self:flex-start;background:var(--wathem);border-top-left-radius:3px}
+.wa.me{align-self:flex-end;background:var(--wame);border-top-right-radius:3px;min-width:90px}
+.wa .t2{font-size:13px;opacity:.6;margin-top:3px}
+.wat{position:absolute;right:9px;bottom:4px;font-size:10.5px;opacity:.55}
+.tick{color:#53BDEB;font-weight:700;opacity:1}
+.wa.typing{display:flex;gap:4px;padding:14px 14px;align-items:center}
+.wa.typing i{width:8px;height:8px;border-radius:50%;background:color-mix(in srgb,var(--wainc) 45%,transparent);animation:dot 1.1s ease-in-out infinite}
+.wa.typing i:nth-child(2){animation-delay:.18s}.wa.typing i:nth-child(3){animation-delay:.36s}
+@keyframes dot{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-5px);opacity:1}}
+.vnote{display:flex;align-items:center;gap:10px;min-width:210px}
+.vplay{width:36px;height:36px;border-radius:50%;background:var(--green);color:#fff;font-size:14px;flex:none;display:grid;place-items:center}
+.vwave{display:flex;align-items:center;gap:2px;flex:1;height:26px}
+.vwave i{display:block;width:3px;border-radius:2px;background:color-mix(in srgb,var(--wainc) 40%,transparent)}
+.vlen{font-size:11px;opacity:.6}
+.vtext{font-size:14px;margin-top:6px;opacity:.85;font-style:italic}
+.wafoot{padding:10px 14px calc(14px + env(safe-area-inset-bottom));background:var(--bg)}
+.wa-opts{display:flex;flex-direction:column;gap:8px}
+.wa-opts .opt{padding:13px 14px;font-size:16px;border-radius:14px}
